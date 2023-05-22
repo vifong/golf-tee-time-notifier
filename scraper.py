@@ -2,7 +2,7 @@ import requests as r
 import pandas as pd
 import re
 
-url_template = "https://ppra.org.pk/dad_tenders.asp?PageNo="
+url_template = "https://cityoflapcp.ezlinksgolf.com"
 html_string = """
     <html>
     <head><title>Latest PPRA Tenders</title></head>
@@ -33,15 +33,16 @@ def download_parse_table(url):
     tender_table["Tender  Details"] = details
     return tender_table
 
-combined_df = []
-for index in range(1,8):
-    df = download_parse_table(url_template+str(index))
-    combined_df.append(df)
+# combined_df = []
+# for index in range(1,8):
+#     df = download_parse_table(url_template+str(index))
+#     combined_df.append(df)
 
-combined_df = pd.concat(combined_df).reset_index(drop=True)
-latest_date = combined_df.iloc[0]['Advertised Date']
-filtered_df = combined_df[combined_df['Advertised Date'] == latest_date]
+# combined_df = pd.concat(combined_df).reset_index(drop=True)
+# latest_date = combined_df.iloc[0]['Advertised Date']
+# filtered_df = combined_df[combined_df['Advertised Date'] == latest_date]
 
-table_html = filtered_df.to_html(index=False,render_links=True, justify="center", escape=False, border=4)
-with open('ppra.html', 'w') as f:
-    f.write(html_string %(table_html))
+# table_html = filtered_df.to_html(index=False,render_links=True, justify="center", escape=False, border=4)
+# with open('ppra.html', 'w') as f:
+#     f.write(html_string %(table_html))
+
