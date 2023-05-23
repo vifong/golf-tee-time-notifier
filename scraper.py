@@ -171,7 +171,7 @@ def scrape(date):
 
 
 def writeMessage(course, target_date, results):
-    message = "%0ATee Time Alert!%0A{course_name} - {date}%0A{results}%0A{link}".format(
+    message = "Tee Time Alert! {course_name} - {date} {results} {link}".format(
         course_name=course['name'], date=target_date, results=results, link="https://cityoflapcp.ezlinksgolf.com/")
     print(message)
 
@@ -179,9 +179,6 @@ def writeMessage(course, target_date, results):
     with open(file_name, 'w') as f:
         f.write(message)
         print("Message written to ", file_name)
-
-
-
 
 
 if __name__ == '__main__':

@@ -1,1 +1,1 @@
-%0ATee Time Alert!%0ARancho Park Golf Course - Sat, May 27%0A['5:40PM', '5:50PM', '6:00PM', '6:10PM', '6:20PM', '6:30PM', '6:40PM', '6:50PM']%0Ahttps://cityoflapcp.ezlinksgolf.com/
+Tee Time Alert! Rancho Park Golf Course - Sat, May 27 ['5:40PM', '5:50PM', '6:00PM', '6:10PM', '6:20PM', '6:30PM', '6:40PM', '6:50PM'] https://cityoflapcp.ezlinksgolf.com/
