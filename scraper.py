@@ -1,12 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-# import calendar
 import datetime
-# import pandas as pd
 import re
 import time
 
@@ -17,7 +15,6 @@ URL_SUFFIX = "/search#sortby=Date&view=Grouping&holes=3&timeperiod=3&timemax=30&
 URL_TEMPLATE = URL_PREFIX + "{course_id}-{course_tag}" + URL_SUFFIX
 
 PLAYER_COUNT = 2
-
 COURSES = [
     {
         'id': '12203',
@@ -26,12 +23,17 @@ COURSES = [
     },
 ]
 
-browser = webdriver.Chrome()
+
+chrome_options = Options()
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--headless")
+browser = webdriver.Chrome(chrome_options=chrome_options)
+
 
 def loadLandingPage(course_id, course_tag):
     browser.get(URL_TEMPLATE.format(course_id=course_id, course_tag=course_tag))
     browser.maximize_window()
-
     time.sleep(2)
 
 
