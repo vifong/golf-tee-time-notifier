@@ -52,7 +52,7 @@ jobs:
         with:
           fromPhoneNumber: '+1(844)9684068'
           toPhoneNumber: ${{ secrets.PHONE_NUMBER }}
-          message: 'blah blah' #${{ steps.vars.outputs.message }}
+          message: ${{ steps.vars.outputs.message }}
         env:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
