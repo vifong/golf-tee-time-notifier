@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # import calendar
 import datetime
-import pandas as pd
+# import pandas as pd
 import re
 import time
 
@@ -125,9 +125,9 @@ def hasDiffs():
 
 
 def snapshotResults(course_tag, target_date, results):
-    file_name = 'snapshots/{course_tag}_target-{date}_timestamp-{timestamp}.html'.format(
-        course_tag=course_tag, date=target_date.strftime("%Y%m%d"), timestamp=datetime.datetime.now())
+    file_name = 'snapshots/{course_tag}_{date}.html'.format(course_tag=course_tag, date=target_date.strftime("%Y%m%d"))
     with open(file_name, 'w') as f:
+        f.write("Timestamp: {date} \n".format(date=str(datetime.datetime.now())))
         f.write(results)
         print("Snapshot written to ", file_name)
 
@@ -135,8 +135,8 @@ def snapshotResults(course_tag, target_date, results):
 def parseResults(html_text):
     results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
     print(results)
-
-    # ['\n\t\t\t\t\t\t\t5:40<script type="jsv#63_"></script><sub>PM</sub><script type="jsv/63_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t5:50<script type="jsv#68_"></script><sub>PM</sub><script type="jsv/68_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:00<script type="jsv#73_"></script><sub>PM</sub><script type="jsv/73_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:10<script type="jsv#78_"></script><sub>PM</sub><script type="jsv/78_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:20<script type="jsv#83_"></script><sub>PM</sub><script type="jsv/83_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:30<script type="jsv#88_"></script><sub>PM</sub><script type="jsv/88_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:40<script type="jsv#93_"></script><sub>PM</sub><script type="jsv/93_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:50<script type="jsv#98_"></script><sub>PM</sub><script type="jsv/98_"></script>\n\t\t\t\t\t\t']
+    if not results:
+        return []
 
     # Clean time results
     cleaned_times = []
@@ -165,6 +165,20 @@ def scrape(date):
 
     
     print(results)
+    return results
+
+
+def writeMessage(course, target_date, results):
+    message = "\nTee Time Alert!\n{course_name} - {date}\n{results}\n{link}".format(
+        course_name=course['name'], date=target_date, results=results, link="https://cityoflapcp.ezlinksgolf.com/")
+    print(message)
+
+    file_name = "message.txt"
+    with open(file_name, 'w') as f:
+        f.write(message)
+        print("Message written to ", file_name)
+
+
 
 
 
@@ -172,7 +186,8 @@ if __name__ == '__main__':
     loadLandingPage(course_id=COURSES[0]["id"], course_tag=COURSES[0]["tag"])
     target_dates = computeTargetDates()
     for date in target_dates:
-        scrape(date)
+        results = scrape(date)
+        writeMessage(COURSES[0], date.strftime("%a, %b %d"), results)
 
     time.sleep(600)
     browser.close()
