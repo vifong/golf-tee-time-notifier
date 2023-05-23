@@ -1,4 +1,4 @@
-name: Scrape
+name: Golf Now Notifier
 
 on:
   # schedule:
@@ -47,7 +47,7 @@ jobs:
         with:
           fromPhoneNumber: '+1(844)9684068'
           toPhoneNumber: ${{secrets.PHONE_NUMBER}}
-          message: 'Hello from Twilio'
+          message: 'beep boop'
         env:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}

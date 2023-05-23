@@ -1,0 +1,745 @@
+<html lang="en" data-ng-app="ezLinks" data-ng-controller="generalController as generalController" data-ng-init="generalController.init()" class="ng-scope"><head><script async="" src="https://static.cloudflareinsights.com/beacon.min.js/v52afc6f149f6479b8c77fa569edb01181681764108816?_=1684800935594"></script><script async="" src="https://static.cloudflareinsights.com/beacon.min.js/v52afc6f149f6479b8c77fa569edb01181681764108816?_=1684800935593"></script><style type="text/css">.uib-tab > div{position:relative;display:block;padding:10px 15px;outline:0;color:#337ab7;}.uib-tab > div:focus,.uib-tab > div:hover{background-color:#eee;color:#23527c;}.uib-tab.disabled > div{color:#777;}.uib-tab.disabled > div:focus,.uib-tab.disabled > div:hover{color:#777;cursor:not-allowed;background-color:transparent;}.nav-tabs > .uib-tab > div{margin-right:2px;line-height:1.42857143;border:1px solid transparent;border-radius:4px 4px 0 0;}.nav-tabs > .uib-tab > div:hover{border-color:#eee #eee #ddd;}.nav-tabs > .uib-tab.active > div,.nav-tabs > .uib-tab.active > div:focus,.nav-tabs > .uib-tab.active > div:hover{color:#555;cursor:default;background-color:#fff;border-color:#ddd #ddd transparent #ddd;}.nav-pills > .uib-tab > div{border-radius:4px;}.nav-pills > .uib-tab.active > div,.nav-pills > .uib-tab.active > div:focus,.nav-pills > .uib-tab.active > div:hover{color:#fff;background-color:#337ab7;}</style><style type="text/css">.ng-animate.item:not(.left):not(.right){-webkit-transition:0s ease-in-out left;transition:0s ease-in-out left}</style><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Pragma-directive: no-cache">
+    <meta http-equiv="Cache-directive: no-cache">
+    <meta http-equiv="Expires" content="0">
+    <!-- ngIf: facebookDomainVerification -->
+    <title>City of LA - PC Public - Online tee times made EZ</title>
+    <link rel="stylesheet" href="assets/css/main.min.css">
+    <!-- CSS Bundle Managed in gulpfile.js -->
+    <link rel="stylesheet" href="app/all-23b5108923.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/angular-busy/angular-busy.min.css">
+
+    <link href="//fonts.googleapis.com/css?family=Arvo" rel="stylesheet" type="text/css">
+    <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script async="" src="//www.googletagmanager.com/gtm.js?id=GTM-TC3W9J"></script><script>
+        var dataLayer = [{ 'Event': 'Load', 'Page Hostname': window.location.hostname }];
+    </script>
+    <script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TC3W9J');
+    </script>
+</head>
+<body>
+    <!-- Google Tag Manager -->
+    <noscript>
+        <iframe src="//www.googletagmanager.com/ns.html?id=GTM-TC3W9J"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager -->
+    <script>
+        // fix for IE9
+        (function () {
+            window.console = window.console || {};
+            window.console.log = window.console.log || function () { };
+        })();
+    </script>
+    <script type="text/ng-template" id="loading.html">
+        <div style="{{loadingIndicatorStyle}}">
+            <div class="loading-indicator">
+                <i class="fa-li fa fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </script>
+    <!-- ngInclude: 'app/styles.html' --><div data-ng-include="'app/styles.html'" class="ng-scope"><style class="ng-binding ng-scope">
+    .filter li .date-input {
+        background-image: -ms-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -moz-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -o-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #339f33), color-stop(1, #339f33));
+        background-image: -webkit-linear-gradient(top, #339f33 0%, #339f33 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#339f33', endColorstr='#339f33'); zoom: 1;
+
+        background-image: linear-gradient(to bottom, #339f33 1%, #339f33 100%);
+    }
+
+    .in-box {
+        border: 1px solid #339f33;
+    }
+
+    /* line 8, ../scss/modules/_home.scss */
+    .horizontal-separator {
+        border-top: 1px solid #339f33;
+    }
+
+    /* line 12, ../scss/modules/_home.scss */
+    .vertical-separator {
+        border-right: 1px solid #339f33;
+    }
+
+    .btn-default {
+        background-image: -ms-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -moz-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -o-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #339f33), color-stop(1, #339f33));
+        background-image: -webkit-linear-gradient(top, #339f33 0%, #339f33 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#339f33', endColorstr='#339f33'); zoom: 1;
+
+        background-image: linear-gradient(to bottom, #339f33 1%, #339f33 100%);
+    }
+
+    .or-spacer .mask:after {
+        box-shadow: 0 0 8px #339f33;
+    }
+
+    .or-spacer .mask:after {
+        box-shadow: 0 0 8px #339f33;
+    }
+
+    .or-spacer-vertical.left .mask:after {
+        box-shadow: 0 0 8px #339f33;
+    }
+
+    .or-spacer-vertical.right .mask:before {
+        box-shadow: 0 0 8px #339f33;
+    }
+
+    .filter li .date-input {
+        background-image: -ms-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -moz-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -o-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #339f33), color-stop(1, #339f33));
+        background-image: -webkit-linear-gradient(top, #339f33 0%, #339f33 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#339f33', endColorstr='#339f33'); zoom: 1;
+
+        background-image: linear-gradient(to bottom, #339f33 1%, #339f33 100%);
+    }
+
+    .ui-widget-header {
+        background: #339f33 !important;
+    }
+
+    .primary-btn {
+        background-image: -ms-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -moz-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -o-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #339f33), color-stop(1, #339f33));
+        background-image: -webkit-linear-gradient(top, #339f33 0%, #339f33 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#339f33', endColorstr='#339f33'); zoom: 1;
+
+        background-image: linear-gradient(to bottom, #339f33 1%, #339f33 100%);
+    }
+
+    .select-pricing-modal .pricing-players label.active {
+        background: #339f33;
+    }
+
+    .select-pricing-modal .price-listing:hover, .select-pricing-modal .price-listing.active {
+        background: #339f33;
+    }
+
+    .ui-widget-header {
+        background: #339f33 !important;
+    }
+
+    .ui-widget-header .ui-datepicker-prev, .ui-widget-header .ui-datepicker-next {
+        color: #fff !important;
+        background: #339f33 !important;
+        }
+
+    .ngrs-range-slider .ngrs-join {
+        background-color: #339f33;
+        background-image: linear-gradient(#339f33, #339f33);
+    }
+
+    a {
+        color: #339f33;
+    }
+
+    .filter li .filter-window .ui-widget-header {
+        background: #339f33;
+    }
+
+    .top-nav .account-menu ul li:hover {
+        background-color: #339f33;
+    }
+
+    .top-nav .account-menu .account-details a:hover {
+        color: #339f33;
+    }
+
+    .select-pricing-modal .pricing-players label.active {
+        background: #339f33;
+    }
+
+    .select-pricing-modal ul.selectPricingList li .price-listing:hover, .select-pricing-modal ul.selectPricingList li .price-listing.active {
+        background: #339f33;
+    }
+
+    .confirmation-page h1 .num, .cart-page h1 .num {
+        background: #339f33;
+        box-shadow: 0px 0px 2px #339f33,inset -1px 0px 2px #fff;
+    }
+
+    .page-header {
+        border-bottom: solid 5px #339f33;
+    }
+
+    .reservations .reservation-list .actions i {
+        color: #339f33;
+    }
+
+    .internal-footer a {
+        color: #339f33;
+    }
+
+    .course {
+        background-color: #808080 !important;
+        color: #FFFFFF !important;
+    }
+
+    header {
+        border-bottom: 3px solid #339f33;
+    }
+
+    footer {
+        border-top: 3px solid #339f33;
+    }
+
+    .teeSheetHeader {
+        background-image: -ms-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -moz-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -o-linear-gradient(top, #339f33 1%, #339f33 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #339f33), color-stop(1, #339f33));
+        background-image: -webkit-linear-gradient(top, #339f33 0%, #339f33 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#339f33', endColorstr='#339f33');
+        zoom: 1;
+        background-image: linear-gradient(to bottom, #339f33 1%, #339f33 100%);
+    }
+
+    @media (max-width: 767px) {
+        header {
+            background: url(https://cdn.ezlinks.com/Sponsor/13398/_images/LACityGolf320x60.jpg) center no-repeat;
+            height: 60px;
+            
+        }
+
+        header .logo {
+            max-height: 57px;
+        }
+
+        footer {
+            background: url() center no-repeat;
+            height: 60px;
+            display: none;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1200px) {
+        header {
+            background: url(https://cdn.ezlinks.com/Sponsor/13398/_images/LACityGolf768x100.jpg) center no-repeat;
+            height: 100px;
+            
+        }
+
+        header .logo {
+            max-height: 97px;
+        }
+
+        footer {
+            background: url() center no-repeat;
+            height: 100px;
+            display: none;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        header {
+            background: url(https://cdn.ezlinks.com/Sponsor/13398/_images/LACityGolf1200x100.jpg) center no-repeat;
+            height: 100px;
+            
+        }
+
+        header .logo {
+            max-height: 97px;
+        }
+
+        footer {
+            background: url() center no-repeat;
+            height: 100px;
+            display: none;
+        }
+    }
+</style>
+<script class="ng-scope">(function(){var js = "window['__CF$cv$params']={r:'7cb91af859a52b6b',m:'X0WXrkRYLtUtKzOoUi92bACwG8K5X.FadMDhnWoT8lg-1684800936-0-AQPipBRt31/o8UQEmx46Y/mxwQMLLH6ECEFxoRRpOuNx',u:'/cdn-cgi/challenge-platform/h/g'};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/invisible.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.nonce = '';_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script><script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v52afc6f149f6479b8c77fa569edb01181681764108816" integrity="sha512-jGCTpDpBAYDGNYR5ztKt4BQPGef1P0giN6ZGVUi835kFF88FOmmn8jBQWNgrNd8g/Yu421NdgWhwQoaOPFflDw==" data-cf-beacon="{&quot;rayId&quot;:&quot;7cb91af859a52b6b&quot;,&quot;token&quot;:&quot;0f41094787234f798612ac92c11e032f&quot;,&quot;version&quot;:&quot;2023.4.0&quot;,&quot;si&quot;:100}" crossorigin="anonymous" class="ng-scope"></script>
+</div>
+    <!-- ngInclude: 'app/modals.html' --><div data-ng-include="'app/modals.html'" class="ng-scope"><!-- alert (OK) alert -->
+<script type="text/ng-template" id="alert.html" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal">
+        <!-- body -->
+        <div class="col-xs-12">
+            <h1 title="title" style="width: inherit"><strong data-ng-bind-html="ec.title"></strong>&shy;</h1>
+            <div data-ng-bind-html="ec.html" ></div>
+        </div>
+
+        <!-- button(s) -->
+        <div class="col-xs-12 center">
+            <button class="btn btn-10 btn-default" data-ng-click="ec.onYesClick()" data-ng-enter="ec.onYesClick()">OK</button>
+        </div>
+    </div>
+</script>
+
+<!-- confirm (OK/CANCEL or YES/NO) alert -->
+<script type="text/ng-template" id="confirm.html" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal" data-ng-enter="ec.onYesClick()">
+        <!-- title + body -->
+        <div class="col-xs-12">
+            <h2 title="title"><strong data-ng-bind="ec.title"></strong>&shy;</h2>
+            <div class="m-b-15" data-ng-bind-html="ec.html" ></div>
+        </div>
+
+        <!-- button(s) -->
+        <div class="col-xs-12">
+            <div class="col-xs-6 right">
+                <button class="btn btn-10 btn-default" data-ng-click="ec.onYesClick()">Yes</button>
+            </div>
+            <div class="col-xs-6 left">
+                <button class="btn btn-10 btn-default gray" data-ng-click="ec.onNoClick()">No</button>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- skill set alert -->
+<script type="text/ng-template" id="alertSkillSet.html" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal">
+        <div class="col-xs-12" title="To learn more about Find a Game please go to: http://www.findagame.io/">
+            <a href="http://www.findagame.io/" target="_blank">
+                <h1><strong data-ng-bind-html="ec.title" ></strong></h1>
+            </a>
+            <div data-ng-bind-html="ec.html"></div>
+        </div>
+        <div class="col-xs-12 m-t-05 min-h-30">
+            <div class="col-xs-12">
+                <select name="SkillLevelID" class="edit" data-ng-model="ec.skillLevelId" ng-change="ec.onSkillSetUpdate();" autofocus>
+                    <option value="" disabled>Undefined</option>
+                    <option value="1">70's</option>
+                    <option value="2">80's</option>
+                    <option value="3">90's</option>
+                    <option value="4">100's</option>
+                    <option value="0">Prefer not to share</option>
+                </select>
+
+                <span data-ng-bind="ec.skillLevelBinding()" class="read hide"></span>
+            </div>
+        </div>
+        <div class="col-xs-12 center">
+            <button id="fgOKButton" class="btn btn-10 btn-default" data-ng-disabled="!ec.validSkillSet" data-ng-click="ec.onSkillSetSubmitClick()">OK</button>
+        </div>
+    </div>
+</script>
+
+<!-- modify reservation alert -->
+<script type="text/ng-template" id="alertModifyReservation.html" controller="ec" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal">
+        <h1><strong data-ng-bind-html="ec.title" ></strong></h1>
+        <div class="col-xs-12" title="To change the number of golfers in your reservation, select a number to delete from reservation.">
+            <div data-ng-bind-html="ec.html"></div>
+        </div>
+        <div class="col-xs-12 m-t-05 min-h-30">
+            <div class="col-xs-12">
+                <select id="numGolfers" name="numberOfPlayers" class="preSearch-select-player" data-ng-model="ec.numGolfers"
+                        ng-options="golferNumList.value as golferNumList.value for golferNumList in ec.golferNumList"
+                        ng-init="ec.golferNumList[$index] = ec.golferNumList[$index].value" title="Select Number of Players to Remove From Reservation" ></select>
+            </div>
+        </div>
+        <div class="col-xs-6  center">
+            <button class="btn btn-10 btn-default gray" data-ng-click="ec.onNoClick()">Cancel</button>
+        </div>
+        <div class="col-xs-6 center">
+            <button class="btn btn-10 btn-default" data-ng-click="ec.onModifyReservationOKClick()">OK</button>
+        </div>
+    </div>
+</script>
+
+<!-- calendar alert -->
+<script type="text/ng-template" id="alertSendToCalendar.html" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal center" data-ng-enter="ec.onNoClick()">
+        <div class="col-xs-12 center" title="Choose a Calendar to Update">
+            <h1>
+                <strong>{{message}}</strong>
+            </h1>
+        </div>
+        <div class="add-to-calendar center" id="calendarAnchors">
+            <div>
+                <a target="_blank" href="{{hrefGoogleCalendar}}">Google Calendar</a><br />
+            </div>
+            <div class="{{showYahoo}}">
+                <a target="_blank" href="{{hrefYahooCalendar}}">Yahoo Calendar</a><br />
+            </div>
+            <div class="{{showOutlook}}">
+                <a target="_blank" href="{{hrefOutlookCalendar}}">Outlook Calendar</a><br />
+            </div>
+            <div>
+                <a href="" data-ng-click="downloadIcs()" download="TeeTimeEvent.ics">{{iCal}}</a><br />
+            </div>
+        </div>
+        <br />
+        <div class="col-xs-12 center">
+            <button class="btn btn-10 btn-default green center" data-ng-click="ec.onNoClick()">Go Back</button>
+        </div>
+    </div>
+</script>
+
+<!-- type in name of golfer -->
+<script type="text/ng-template" id="enterGolferName.html" controller="ec" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal">
+        <h1><strong data-ng-bind-html="ec.title" ></strong></h1>
+        <div class="col-xs-12" title="Please type in the name of a player">
+            <div data-ng-bind-html="ec.html" ></div>
+        </div>
+        <div class="col-xs-12 m-t-05 min-h-30">
+            <div class="col-xs-12">
+                <input type="text" placeholder="Last Name, First Name" id="golferName"
+                       data-ng-model="ec.golferName" maxlength="50"
+                       data-ng-model-options="{ debounce: 500 }"
+                       class="form-control player-text-box"
+                       title="Enter Golfer Name" />
+            </div>
+        </div>
+        <div class="col-xs-6  center">
+            <button class="btn btn-10 btn-default dark" data-ng-click="ec.onCancelClick()">Cancel</button>
+        </div>
+        <div class="col-xs-6 center">
+            <button class="btn btn-10 btn-default" data-ng-click="ec.onOKClick()">OK</button>
+        </div>
+    </div>
+</script><script class="ng-scope">(function(){var js = "window['__CF$cv$params']={r:'7cb91af859a62b6b',m:'bLXKxS0uujBdKdmzY4T3W5k6YxAJZzxcAucO6uaw97Y-1684800936-0-AXiPFltbY8a5nzsr1yFAZ6EZT/4KFnBdExeX944VISIz',u:'/cdn-cgi/challenge-platform/h/g'};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/invisible.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.nonce = '';_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script><script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v52afc6f149f6479b8c77fa569edb01181681764108816" integrity="sha512-jGCTpDpBAYDGNYR5ztKt4BQPGef1P0giN6ZGVUi835kFF88FOmmn8jBQWNgrNd8g/Yu421NdgWhwQoaOPFflDw==" data-cf-beacon="{&quot;rayId&quot;:&quot;7cb91af859a62b6b&quot;,&quot;token&quot;:&quot;0f41094787234f798612ac92c11e032f&quot;,&quot;version&quot;:&quot;2023.4.0&quot;,&quot;si&quot;:100}" crossorigin="anonymous" class="ng-scope"></script>
+</div>
+    <div>
+        <div class="loading-div" cg-busy="gcIsLoadingDfd"><div class="cg-busy cg-busy-backdrop cg-busy-backdrop-animation ng-scope ng-hide" ng-show="$cgBusyIsActive() === true"></div><div class="cg-busy cg-busy-animation ng-scope ng-hide" ng-show="$cgBusyIsActive() === true">
+        <div style="">
+            <div class="loading-indicator">
+                <i class="fa-li fa fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </div></div>
+        <div data-ng-show="!isLoading" class="">
+            <!-- ngIf: !isSafariIniFrame --><!-- ngInclude: 'app/shared/header/header.html' --><div ng-if="!isSafariIniFrame" class="hidden-print ng-scope" data-ng-include="'app/shared/header/header.html'"><div data-ng-controller="headerController" class="container m-b-10 col-xs-12 nopadding ng-scope" data-ng-init="init()">    
+    <header class="m-b-10" data-ng-click="customerURL()"></header>
+</div>
+</div><!-- end ngIf: !isSafariIniFrame -->
+            <div class="container nopadding-xs">
+                <!-- ngIf: !hideCurrentTime -->
+                <!-- uiView: undefined --><ui-view name="mainView" class="col-xs-12 nopadding ng-scope"><div class="search-result ng-scope" ng-controller="preSearchController as ec">
+    <!-- ngIf: !ec.isSafariIniFrame --><div data-ng-if="!ec.isSafariIniFrame" class="pre-search col-sm-12 nopadding-x ng-scope read-form hide-required" data-ng-class="{ 'edit-form': isEditMode, 'read-form': !isEditMode, 'hide-required': !showRequired }">
+
+        <div class="nopadding-x">
+            <div class="row">
+                <div class="hidden-xs col-md-3 col-lg-4"></div>
+                <div class="col-xs-12 col-md-6 col-lg-4 m-t-05 min-h-30 header">
+                    <div class="col-xs-12 preSearch-center"><h2>Tee Time Search</h2></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="hidden-xs col-md-3 col-lg-4"></div>
+                <div class="col-xs-12 col-md-6 col-lg-4 m-t-03 min-h-30">
+                    <form name="preSearchForm" class="ng-pristine ng-valid ng-submitted">
+                        <div class="col-xs-12">
+                            <ul class="filter">
+
+                                <!-- date of play -->
+                                <li class="preSearch-center">
+                                    <div class="m-b-05 preSearch-m-t">
+                                        <strong>When do you want to play?</strong>
+                                    </div>
+                                    <div class="preSearch-datepicker">
+                                        <input type="text" class="preSearch-calendar-input ng-pristine ng-untouched ng-valid ng-isolate-scope hasDatepicker" datepicker="" ng-readonly="false" data-ng-model="ec.startDate" placeholder="Click here for date" data-ng-change="ec.onDateChanged(ec.startDate)" min-date="ec.minDate" max-date="ec.maxDate" id="dateInput">
+                                        <label class="btn" for="dateInput" onclick="javascript:void(0)" title="Enter Date">
+                                            <i class="fa fa-calendar preSearch-calendar-icon"></i>­
+                                        </label>
+                                    </div>
+                                </li>
+
+                                <!-- player count -->
+                                <li class="preSearch-center">
+                                    <div class="m-b-05">
+                                        <strong>How many people?</strong>
+                                    </div>
+                                    <div class="btn-group col-xs-12">
+                                        <select id="pc" class="preSearch-select-player ng-pristine ng-untouched ng-valid" ng-model="ec.selectedPlayer" ng-change="ec.onPlayerCountChanged(ec.selectedPlayer)" ng-options="player as player for player in ec.filterPlayers" title="Enter Players"><option label="1" value="string:1">1</option><option label="2" value="string:2">2</option><option label="3" value="string:3">3</option><option label="4" value="string:4" selected="selected">4</option><option label="5" value="string:5">5</option></select>
+                                    </div>
+                                </li>
+
+                                <!-- country filter -->
+                                <li class="preSearch-center">
+                                    <div class="m-b-05">
+                                        <strong>Where do you want to play?</strong>
+                                    </div>
+                                    <!-- ngIf: ec.showCountryFilter -->
+                                </li>
+
+                                <!-- states filter -->
+                                <!-- ngIf: ec.showStateFilter -->
+
+                                <!-- cities filter -->
+                                <!-- ngIf: ec.showCityFilter -->
+
+                                <!-- courses filter -->
+                                <!-- ngIf: ec.showCourseFilter --><li data-ng-class="{ 'collapsed': ec.isCourseFilterCollapsed }" data-ng-if="ec.showCourseFilter" class="ng-scope">
+                                    <legend data-ng-click="ec.isCourseFilterCollapsed = !ec.isCourseFilterCollapsed">
+                                        Courses <i class="fa toggle-arrow fa-chevron-up" data-ng-class="{ 'fa-chevron-down': ec.isCourseFilterCollapsed, 'fa-chevron-up': !ec.isCourseFilterCollapsed }"></i>
+                                    </legend>
+                                    <div class="checklist filter-body m-b-05 in collapse" uib-collapse="ec.isCourseFilterCollapsed" aria-expanded="true" aria-hidden="false" style="height: auto;">
+                                        <!-- ngIf: ec.showCourseSelectAllControls --><div class="search-select-div ng-scope" data-ng-if="ec.showCourseSelectAllControls">
+                                            <!-- 'c' aleady used for city and 's' for state - picking 'r' for course; selectAll needs city code run for unusual QA testing WEBMKT-2200-->
+                                            <a href="javascript:void(0)" ng-click="ec.onCourseFilterSelectAllClick()" class="search-select-all">Select All</a>|
+                                            <a href="javascript:void(0)" ng-click="ec.onCourseFilterClearAllClick()" class="search-clear-all">Clear All</a>
+                                        </div><!-- end ngIf: ec.showCourseSelectAllControls -->
+                                        <ul class="automationPadding">
+                                            <!-- ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="5997">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Griffith Park - Harding</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="5998">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Griffith Park - Wilson</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="5995">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Hansen Dam</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="23128">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Hansen Dam (Back 9)</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="5996">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Harbor Park</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="17679">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Los Feliz 3-Par</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="6171">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Penmar</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="6204">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Rancho Park</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="23129">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Rancho Park (Back 9)</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="6205">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Rancho Park 3-Par</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="6226">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Roosevelt</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="6264">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Sepulveda - Balboa</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="23131">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Sepulveda - Balboa (Back 9)</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="6263">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Sepulveda - Encino</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="23130">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Sepulveda - Encino (Back 9)</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="6380">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Woodley Lakes</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' --><li ng-repeat="cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name'" class="clear ng-scope">
+                                                <div>
+                                                    <div style="float: left; display: inline; padding-right: 8px;">
+                                                        <input type="checkbox" title="Select a course" data-ng-value="cf.courseID" data-ng-model="cf.checked" ng-click="ec.onCourseFilterChanged(cf);" class="ng-pristine ng-untouched ng-valid" value="23132">
+                                                    </div>
+                                                    <div style="float: left; display: inline; width: 80%;">
+                                                        <label title="Select a course" data-ng-bind="cf.name" data-ng-click="cf.checked = !cf.checked; ec.onCourseFilterChanged(cf);" aria-labelledby="cf.name" class="ng-binding">Woodley Lakes (Back 9)</label>
+                                                    </div>
+                                                </div>
+                                            </li><!-- end ngRepeat: cf in ec.courseFilters | filter: { visible: true} | orderBy: 'name' -->
+                                        </ul>
+                                    </div>
+                                </li><!-- end ngIf: ec.showCourseFilter -->
+                            </ul>
+
+                            <!-- -- search button ---->
+                            <div class="col-xs-12 m-t-20">
+                                <div class="col-xs-12 preSearch-center">
+                                    <button class="btn btn-10 btn-default ng-binding" type="submit" ng-disabled="!ec.enableSearchButton" data-ng-click="ec.onSearchButtonClick(preSearchForm)">Search All</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div><!-- end ngIf: !ec.isSafariIniFrame -->
+    <!-- ngIf: ec.isSafariIniFrame -->
+</div></ui-view>
+            </div>
+            <br>
+            <br>
+            <!-- ngIf: !isSafariIniFrame --><!-- ngInclude: 'app/shared/footer/sub-footer.html' --><div ng-if="!isSafariIniFrame" class="hidden-print ng-scope" data-ng-include="'app/shared/footer/sub-footer.html'"><div class="container ng-scope" data-ng-controller="footerController" data-ng-init="initFooter()">
+    <div class="hidden-xs">
+        <div class="col-xs-12 nopadding">
+            <div class="col-sm-6 left nopadding">
+                <div>
+                    <a data-ng-href="http://www.ezlinks.com/infodisplay/solutioncenter/privacypolicydefault.html" target="_blank" class="anchor-link" href="http://www.ezlinks.com/infodisplay/solutioncenter/privacypolicydefault.html">Terms</a>
+                </div>
+            </div>
+            <div class="col-sm-6 right nopadding">
+                <span data-ng-bind="PersonalAssistanceText" class="ng-binding"></span> <span data-ng-bind="PersonalAssistancePhone" class="ng-binding"> </span>
+            </div>
+        </div>
+        <div class="nopadding">
+            <div class="col-sm-6 col-xs-12 left center-xs nopadding ng-binding">
+                Copyright © 2023 GolfNow. All Rights Reserved.
+            </div>
+            <div class="col-sm-6 right nopadding">
+                <a href="mailto:" class="ng-binding">­</a>
+            </div>
+            <div class="col-sm-6 col-xs-12 left center-xs nopadding versionTextAlign ng-binding">
+                Version: 1.0.0.1735  :  Prod
+            </div>
+        </div>
+    </div>
+    <div class="visible-xs">
+        <div class="col-xs-12 center">
+            <span data-ng-bind="PersonalAssistanceText" class="ng-binding"></span>
+        </div>
+        <div class="col-xs-12 center">
+            <a href="tel: " data-ng-bind="PersonalAssistancePhone + '.'" alt="Contact Phone" class="ng-binding"> .</a>
+        </div>
+        <div class="col-xs-12 center">
+            <a href="mailto:" class="ng-binding">­ </a>
+        </div>
+        <div class="col-xs-12 center ng-binding">
+            Copyright © 2023 GolfNow. All Rights Reserved.
+        </div>
+        <div class="col-xs-12 center ng-binding">
+            Version: 1.0.0.1735  :  Prod
+        </div>
+        <div class="col-xs-12 center">
+            <a data-ng-href="http://www.ezlinks.com/infodisplay/solutioncenter/privacypolicydefault.html" target="_blank" class="anchor-link" href="http://www.ezlinks.com/infodisplay/solutioncenter/privacypolicydefault.html">Terms</a>
+        </div>
+    </div>
+</div>
+</div><!-- end ngIf: !isSafariIniFrame -->
+            <!-- ngIf: !isSafariIniFrame --><!-- ngInclude: 'app/shared/footer/footer.html' --><div ng-if="!isSafariIniFrame" data-ng-include="'app/shared/footer/footer.html'" class="ng-scope"><!--<footer class="footer" ng-init="initFooter()">
+    <div class="bottom-footer">
+        <div class="row nopadding">
+            <div class="footer-image">
+                <img class="img-responsive center-block" src={{footerlogo}}/>
+            </div>
+        </div>
+    </div>
+</footer>-->
+
+
+<footer ng-init="initFooter()" class="col-xs-12 nopadding ng-scope"></footer></div><!-- end ngIf: !isSafariIniFrame -->
+        </div>
+    </div>
+    <!-- JavaScript Bundle Managed in gulpfile.js -->
+    <script src="app/all-86a9278f8a.min.js"></script>
+    <script src="app/editUserInfo/services/edit-user-info-service.js"></script>
+    <script src="app/confirmation/controllers/confirmation-controller.js"></script>
+    <script src="app/search/data-model/http-interceptor.js"></script>
+<script>(function(){var js = "window['__CF$cv$params']={r:'7cb91af46d772b6b',m:'z._gVC3eQylLeLGZT1JzFtDqQYcIw2CPParE5ckbofw-1684800935-0-ARTAVUSABwQ9FLoGcITFcKLfkdupuUeU1B545ogBDWh/',u:'/cdn-cgi/challenge-platform/h/g'};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/invisible.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.nonce = '';_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe><script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v52afc6f149f6479b8c77fa569edb01181681764108816" integrity="sha512-jGCTpDpBAYDGNYR5ztKt4BQPGef1P0giN6ZGVUi835kFF88FOmmn8jBQWNgrNd8g/Yu421NdgWhwQoaOPFflDw==" data-cf-beacon="{&quot;rayId&quot;:&quot;7cb91af46d772b6b&quot;,&quot;token&quot;:&quot;0f41094787234f798612ac92c11e032f&quot;,&quot;version&quot;:&quot;2023.4.0&quot;,&quot;si&quot;:100}" crossorigin="anonymous"></script>
+
+
+<iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe><div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe></body></html>
