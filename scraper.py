@@ -48,18 +48,17 @@ def filterTime():
 def filterPlayerCount():
     golfers_btn = browser.find_element(By.XPATH, "//a[@title='Golfers']")
     golfers_btn.click()
-
     time.sleep(1)
 
     two_golfers_radio_input = browser.find_element(By.XPATH, "//input[@type='radio' and @value='{players}']".format(players=PLAYER_COUNT))
     parent_element = two_golfers_radio_input.find_element(By.XPATH, "..")
     parent_element.click()
+    time.sleep(1)
 
 
 def filterDate(target_date):
     date_btn = browser.find_element(By.ID, "fed-search-big-date")
     date_btn.click()
-
     time.sleep(1)
 
     picker_month = browser.find_element(By.CLASS_NAME, "picker__month")
@@ -86,6 +85,7 @@ def filterDate(target_date):
     print("target_day:", target_date.day)
     print("picker_day:", picker_day.text)
     picker_day.click()
+    time.sleep(1)
 
 
 def filterCourse(target_course):
@@ -94,8 +94,7 @@ def filterCourse(target_course):
     search_bar.send_keys(target_course)
     search_btn = browser.find_element(By.ID, "btn-search-tee-time")
     search_btn.click()
-
-    time.sleep(2)
+    time.sleep(1)
 
     # WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.ID, "search-header-date")))
     # print("Search results rendered.")   
@@ -125,22 +124,45 @@ def hasDiffs():
     return True
 
 
-def snapshotHtml(course_tag, target_date):
+def snapshotResults(course_tag, target_date, results):
     file_name = 'snapshots/{course_tag}_{date}.html'.format(course_tag=course_tag, date=target_date.strftime("%Y%m%d"))
     with open(file_name, 'w') as f:
-        f.write(browser.page_source)
+        f.write(results)
         print("Snapshot written to ", file_name)
 
 
+def parseResults(html_text):
+    results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
+    print(results)
+
+    # ['\n\t\t\t\t\t\t\t5:40<script type="jsv#63_"></script><sub>PM</sub><script type="jsv/63_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t5:50<script type="jsv#68_"></script><sub>PM</sub><script type="jsv/68_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:00<script type="jsv#73_"></script><sub>PM</sub><script type="jsv/73_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:10<script type="jsv#78_"></script><sub>PM</sub><script type="jsv/78_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:20<script type="jsv#83_"></script><sub>PM</sub><script type="jsv/83_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:30<script type="jsv#88_"></script><sub>PM</sub><script type="jsv/88_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:40<script type="jsv#93_"></script><sub>PM</sub><script type="jsv/93_"></script>\n\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t6:50<script type="jsv#98_"></script><sub>PM</sub><script type="jsv/98_"></script>\n\t\t\t\t\t\t']
+
+    # Clean time results
+    cleaned_times = []
+    for result in results:
+        cleaned_str = result.strip()
+        cleaned_str = re.sub('<script (.+?)</script>', '', cleaned_str)
+        cleaned_str = re.sub('<sub>', '', cleaned_str)
+        cleaned_str = re.sub('</sub>', '', cleaned_str)
+        print(cleaned_str)
+        cleaned_times.append(cleaned_str)
+
+    return cleaned_times
+
+
+
 def scrape(date):
-    filterPlayerCount()
     filterDate(date)
     filterCourse(target_course=COURSES[0]["name"])
     # validateResults(target_course=COURSES[0]["name"], target_date=date)
+    filterPlayerCount()
     selectListView()
         
-    if hasDiffs():
-        snapshotHtml(course_tag=COURSES[0]["tag"], target_date=date)
+    # if hasDiffs():
+    snapshotResults(course_tag=COURSES[0]["tag"], target_date=date, results=browser.page_source)
+
+    results = parseResults(browser.page_source)
+    print(results)
 
 
 
@@ -151,58 +173,10 @@ if __name__ == '__main__':
         scrape(date)
 
     time.sleep(600)
-
-
     browser.close()
 
 
 
-
-
-
-# def fillSearchForm():
-#     # Select 2 people
-#     peopleDropdown = browser.find_element(By.ID, "pc")
-#     peopleDropdown.click()
-#     twoOption = browser.find_element(By.XPATH, "//option[@label='2']")
-#     twoOption.click()
-
-#     # Select date
-#     dateInput = browser.find_element(By.XPATH, "//input[@placeholder='Click here for date']")
-#     dateInput.clear()
-#     dateInput.send_keys('05/27/2023')
-#     time.sleep(1)
-#     # datePicker = browser.find_element(By.CLASS, "ui-datepicker-calendar")
-
-
-#     # Select course(s)
-#     courseLabel = browser.find_element(By.XPATH, "//label[@title='Select a course' and contains(., 'Rancho Park')]")
-#     courseLabel.click()
-
-
-#     # dateInput.send_keys('Keys.ESCAPE')
-    
-
-#     # Click Search button
-#     searchBtn = browser.find_element(By.XPATH, "//button[@type='submit' and contains(., 'Search')]")
-#     browser.execute_script("arguments[0].scrollIntoView(true);", searchBtn);
-
-#     time.sleep(2)
-
-#     searchBtn.click()
-
-#     time.sleep(15)
-
-
-
-
-# time.sleep(2)
-
-# with open('test/landing_page.html', 'w') as f:
-#     f.write(landingPageHtml) 
-
-
-# browser.close() 
 
 #####################################################
  
