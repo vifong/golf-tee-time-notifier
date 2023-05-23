@@ -171,8 +171,9 @@ def scrape(date):
 
 
 def writeMessage(course, target_date, results):
-    message = "Tee Time Alert! {course_name} - {date} {results} {link}".format(
-        course_name=course['name'], date=target_date, results=results, link="https://cityoflapcp.ezlinksgolf.com/")
+    message = "Tee Time Alert!"
+    # message = "Tee Time Alert! {course_name} - {date} {results} {link}".format(
+        # course_name=course['name'], date=target_date, results=results, link="https://cityoflapcp.ezlinksgolf.com/")
     print(message)
 
     file_name = "message.txt"
