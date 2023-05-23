@@ -28,7 +28,7 @@ chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--headless")
-browser = webdriver.Chrome(chrome_options=chrome_options)
+browser = webdriver.Chrome(options=chrome_options)
 
 
 def loadLandingPage(course_id, course_tag):
@@ -171,7 +171,7 @@ def scrape(date):
 
 
 def writeMessage(course, target_date, results):
-    message = "\nTee Time Alert!\n{course_name} - {date}\n{results}\n{link}".format(
+    message = "%0ATee Time Alert!%0A{course_name} - {date}%0A{results}%0A{link}".format(
         course_name=course['name'], date=target_date, results=results, link="https://cityoflapcp.ezlinksgolf.com/")
     print(message)
 
@@ -191,7 +191,6 @@ if __name__ == '__main__':
         results = scrape(date)
         writeMessage(COURSES[0], date.strftime("%a, %b %d"), results)
 
-    time.sleep(600)
     browser.close()
 
 
