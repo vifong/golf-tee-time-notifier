@@ -125,7 +125,8 @@ def hasDiffs():
 
 
 def snapshotResults(course_tag, target_date, results):
-    file_name = 'snapshots/{course_tag}_{date}.html'.format(course_tag=course_tag, date=target_date.strftime("%Y%m%d"))
+    file_name = 'snapshots/{course_tag}_target-{date}_timestamp-{timestamp}.html'.format(
+        course_tag=course_tag, date=target_date.strftime("%Y%m%d"), timestamp=datetime.datetime.now())
     with open(file_name, 'w') as f:
         f.write(results)
         print("Snapshot written to ", file_name)
@@ -159,9 +160,10 @@ def scrape(date):
     selectListView()
         
     # if hasDiffs():
-    snapshotResults(course_tag=COURSES[0]["tag"], target_date=date, results=browser.page_source)
-
     results = parseResults(browser.page_source)
+    snapshotResults(course_tag=COURSES[0]["tag"], target_date=date, results=str(results))
+
+    
     print(results)
 
 
