@@ -18,6 +18,8 @@ URL_PREFIX = "https://www.golfnow.com/tee-times/facility/"
 URL_SUFFIX = "/search#sortby=Date&view=Grouping&holes=3&timeperiod=3&timemax=30&timemin=10&players=0&pricemax=10000&pricemin=0&promotedcampaignsonly=false"
 URL_TEMPLATE = URL_PREFIX + "{course_id}-{course_tag}" + URL_SUFFIX
 
+PLAYER_COUNT = 2
+
 
 COURSES = [
     {
@@ -40,11 +42,26 @@ def computeFutureDates():
     return [datetime.date(2023, 5, 27)]
 
 
-def selectDate(target_date):
+def filterTime():
+    pass
+
+
+def filterPlayerCount():
+    golfers_btn = browser.find_element(By.XPATH, "//a[@title='Golfers']")
+    golfers_btn.click()
+
+    time.sleep(1)
+
+    two_golfers_radio_input = browser.find_element(By.XPATH, "//input[@type='radio' and @value='{players}']".format(players=PLAYER_COUNT))
+    parent_element = two_golfers_radio_input.find_element(By.XPATH, "..")
+    parent_element.click()
+
+
+def filterDate(target_date):
     date_btn = browser.find_element(By.ID, "fed-search-big-date")
     date_btn.click()
 
-    time.sleep(2)
+    time.sleep(1)
 
     picker_month = browser.find_element(By.CLASS_NAME, "picker__month")
     picker_year = browser.find_element(By.CLASS_NAME, "picker__year")
@@ -72,7 +89,7 @@ def selectDate(target_date):
     picker_day.click()
 
 
-def searchCourse(target_course):
+def filterCourse(target_course):
     search_bar = browser.find_element(By.ID, "fed-search-big")
     search_bar.clear()
     search_bar.send_keys(target_course)
@@ -108,8 +125,9 @@ if __name__ == '__main__':
     loadLandingPage(course_id=COURSES[0]["id"], course_tag=COURSES[0]["tag"])
     future_dates = computeFutureDates()
     for date in future_dates:
-        selectDate(date)
-        searchCourse(target_course=COURSES[0]["name"])
+        filterPlayerCount()
+        filterDate(date)
+        filterCourse(target_course=COURSES[0]["name"])
         # validateResults(target_course=COURSES[0]["name"], target_date=date)
 
 
