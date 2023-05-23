@@ -10,8 +10,6 @@ import pandas as pd
 import re
 import time
 
-# REQUEST_URL = "https://cityoflapcp.ezlinksgolf.com/app/search/searchResult.html"
-# BASE_URL = "https://cityoflapcp.ezlinksgolf.com/index.html#/preSearch"
 
 BASE_URL = "https://www.golfnow.com"
 URL_PREFIX = "https://www.golfnow.com/tee-times/facility/"
@@ -19,7 +17,6 @@ URL_SUFFIX = "/search#sortby=Date&view=Grouping&holes=3&timeperiod=3&timemax=30&
 URL_TEMPLATE = URL_PREFIX + "{course_id}-{course_tag}" + URL_SUFFIX
 
 PLAYER_COUNT = 2
-
 
 COURSES = [
     {
@@ -37,11 +34,13 @@ def loadLandingPage(course_id, course_tag):
 
     time.sleep(2)
 
-def computeFutureDates():
-    # TODO
+
+# TODO(vifong)
+def computeTargetDates():
     return [datetime.date(2023, 5, 27)]
 
 
+# TODO(vifong)
 def filterTime():
     pass
 
@@ -96,14 +95,18 @@ def filterCourse(target_course):
     search_btn = browser.find_element(By.ID, "btn-search-tee-time")
     search_btn.click()
 
-    # time.sleep(2)
+    time.sleep(2)
 
-    WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//h2[contains(., 'Showing Tee Times for:')]"))
-    )
-    print("'Showing Tee Times for' rendered")
+    # WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.ID, "search-header-date")))
+    # print("Search results rendered.")   
 
 
+def selectListView():
+    list_view_btn = browser.find_element(By.XPATH, "//a[@title='List view']")
+    list_view_btn.click()
+
+
+# TODO(vifong)
 def validateResults(target_course, target_date):
     course_result = browser.find_element(By.ID, "fedresults").text
     date_result = browser.find_element(By.ID, "search-header-date").text
@@ -117,25 +120,35 @@ def validateResults(target_course, target_date):
     assert target_course == course_result and styled_date == date_result
 
 
+# TODO(vifong)
+def hasDiffs():
+    return True
 
+
+def snapshotHtml(course_tag, target_date):
+    file_name = 'snapshots/{course_tag}_{date}.html'.format(course_tag=course_tag, date=target_date.strftime("%Y%m%d"))
+    with open(file_name, 'w') as f:
+        f.write(browser.page_source)
+        print("Snapshot written to ", file_name)
+
+
+def scrape(date):
+    filterPlayerCount()
+    filterDate(date)
+    filterCourse(target_course=COURSES[0]["name"])
+    # validateResults(target_course=COURSES[0]["name"], target_date=date)
+    selectListView()
+        
+    if hasDiffs():
+        snapshotHtml(course_tag=COURSES[0]["tag"], target_date=date)
 
 
 
 if __name__ == '__main__':
     loadLandingPage(course_id=COURSES[0]["id"], course_tag=COURSES[0]["tag"])
-    future_dates = computeFutureDates()
-    for date in future_dates:
-        filterPlayerCount()
-        filterDate(date)
-        filterCourse(target_course=COURSES[0]["name"])
-        # validateResults(target_course=COURSES[0]["name"], target_date=date)
-
-
-    # fillSearchForm()
-
-    # searchPageHtml = browser.page_source
-    # with open('test/search_page.html', 'w') as f:
-    #     f.write(searchPageHtml)
+    target_dates = computeTargetDates()
+    for date in target_dates:
+        scrape(date)
 
     time.sleep(600)
 
