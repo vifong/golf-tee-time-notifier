@@ -200,7 +200,7 @@ class NotificationMessageWriter():
         for course_name, tee_times in self.results.items():
             message += "\n{course}:\n".format(course=course_name)
             for date, times in tee_times:
-                message += "{date} - {times}\n".format(date=date, times=times)
+                message += " • {date} - {times}\n".format(date=date, times=times)
 
         print(message)
         return message

@@ -47,7 +47,6 @@ jobs:
           fromPhoneNumber: '+1(844)9684068'
           toPhoneNumber: ${{ secrets.PHONE_NUMBER }}
           message: |
-            |
             ${{ env.MSG_STRING }}
           # message: ${{ steps.vars.outputs.message }}
         env:
