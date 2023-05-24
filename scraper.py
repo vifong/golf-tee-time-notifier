@@ -207,7 +207,7 @@ class NotificationMessageWriter():
 
 
 # TODO(vifong)
-def compute_target_dates() -> list[datetime.date]:
+def compute_target_dates() -> List[datetime.date]:
     return [datetime.date(2023, 5, 27)]
 
 
