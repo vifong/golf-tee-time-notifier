@@ -26,10 +26,10 @@ MESSAGE_OUTPUT_FILE = "message.txt"
 PLAYER_COUNT = 2
 COURSES = [
     GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
-    # GolfCourse('12205', 'woodley-lakes-golf-course' 'Woodley Lakes Golf Course'),
-    # GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
-    # GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
-    # GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
+    GolfCourse('12205', 'woodley-lakes-golf-course' 'Woodley Lakes Golf Course'),
+    GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
+    GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
+    GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
 ]
 
 
@@ -236,21 +236,20 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     target_dates = compute_target_dates()
+    print("target_dates:", [format_date(d) for d in target_dates])
+    scraper = GolfNowScraper(debug_mode=args.debug, filter_times=args.filter_times)
+
+    all_results = defaultdict(list)
+    for course in COURSES:
+        for date in target_dates:
+            times = scraper.scrape(target_course=course, target_date=date, player_count=PLAYER_COUNT)
+            if times:
+                all_results[course.name].append((format_date(date), str(times)))
+
+    message_writer = NotificationMessageWriter(results=all_results, output_file=MESSAGE_OUTPUT_FILE)
+    message_writer.write()
+
     if args.debug:
-        print("target_dates:", [format_date(d) for d in target_dates])
-    # scraper = GolfNowScraper(debug_mode=args.debug, filter_times=args.filter_times)
-
-    # all_results = defaultdict(list)
-    # for course in COURSES:
-    #     for date in target_dates:
-    #         times = scraper.scrape(target_course=course, target_date=date, player_count=PLAYER_COUNT)
-    #         if times:
-    #             all_results[course.name].append((format_date(date), str(times)))
-
-    # message_writer = NotificationMessageWriter(results=all_results, output_file=MESSAGE_OUTPUT_FILE)
-    # message_writer.write()
-
-    # if args.debug:
-    #     time.sleep(600)
+        time.sleep(600)
 
     # scraper.close()
