@@ -10,6 +10,7 @@ from typing import List
 from typing import NamedTuple
 from typing import Tuple
 import argparse
+import calendar
 import datetime
 import re
 import time
@@ -137,11 +138,6 @@ class GolfNowScraper():
         # WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.ID, "search-header-date")))
         # print("Search results rendered.")   
 
-    # def _select_list_view(self) -> None:
-    #     list_view_btn = self.browser.find_element(By.XPATH, "//a[@title='List view']")
-    #     list_view_btn.click()
-    #     self._pause()
-
     # TODO(vifong)
     def _validate_results(self, target_course: GolfCourse, target_date: datetime.date) -> bool:
         course_result = self.browser.find_element(By.ID, "fedresults").text
@@ -205,7 +201,7 @@ class NotificationMessageWriter():
             print("Message written to", self.output_file)
 
     def _craft(self) -> str:
-        message = "*** Tee Time Alert! ***\n"
+        message = "*** Tee Times Alert! ***\n"
         print(self.results.items())
         for course_name, tee_times in self.results.items():
             message += "\n{course}:\n".format(course=course_name)
@@ -216,12 +212,16 @@ class NotificationMessageWriter():
         return message
 
 
-# TODO(vifong)
 def compute_target_dates() -> List[datetime.date]:
-    return [
-        # datetime.date(2023, 5, 27),
-        datetime.date(2023, 6, 3),
-    ]
+    weekends = []
+    today = datetime.date.today()
+    last_date = today + datetime.timedelta(14)
+    candidate_date = today
+    while candidate_date <= last_date:
+        if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
+            weekends.append(candidate_date)
+        candidate_date = candidate_date + datetime.timedelta(1)
+    return weekends
 
 
 def format_date(date: datetime.date) -> str:
@@ -236,19 +236,21 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     target_dates = compute_target_dates()
-    scraper = GolfNowScraper(debug_mode=args.debug, filter_times=args.filter_times)
-
-    all_results = defaultdict(list)
-    for course in COURSES:
-        for date in target_dates:
-            times = scraper.scrape(target_course=course, target_date=date, player_count=PLAYER_COUNT)
-            if times:
-                all_results[course.name].append((format_date(date), str(times)))
-
-    message_writer = NotificationMessageWriter(results=all_results, output_file=MESSAGE_OUTPUT_FILE)
-    message_writer.write()
-
     if args.debug:
-        time.sleep(600)
+        print("target_dates:", [format_date(d) for d in target_dates])
+    # scraper = GolfNowScraper(debug_mode=args.debug, filter_times=args.filter_times)
 
-    scraper.close()
+    # all_results = defaultdict(list)
+    # for course in COURSES:
+    #     for date in target_dates:
+    #         times = scraper.scrape(target_course=course, target_date=date, player_count=PLAYER_COUNT)
+    #         if times:
+    #             all_results[course.name].append((format_date(date), str(times)))
+
+    # message_writer = NotificationMessageWriter(results=all_results, output_file=MESSAGE_OUTPUT_FILE)
+    # message_writer.write()
+
+    # if args.debug:
+    #     time.sleep(600)
+
+    # scraper.close()
