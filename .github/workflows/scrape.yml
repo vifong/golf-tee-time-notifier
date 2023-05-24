@@ -46,9 +46,9 @@ jobs:
         id: vars
         run: |
           MSG_STRING=$(cat message.txt)
-          MSG_STRING="${message//'%'/'%25'}"
-          MSG_STRING="${message//$'\n'/'%0A'}"
-          MSG_STRING="${message//$'\r'/'%0D'}"
+          MSG_STRING="${MSG_STRING//'%'/'%25'}"
+          MSG_STRING="${MSG_STRING//$'\n'/'%0A'}"
+          MSG_STRING="${MSG_STRING//$'\r'/'%0D'}"
           echo "message=$MSG_STRING" >> $GITHUB_OUTPUT
       - name: Test message output
         run: echo ${{ steps.vars.outputs.message }}
