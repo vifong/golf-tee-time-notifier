@@ -44,7 +44,7 @@ class GolfNowScraper():
             chrome_options.add_argument("--headless")
         self.browser = webdriver.Chrome(options=chrome_options)
 
-    def scrape(self, target_course: GolfCourse, target_date: datetime.date, player_count: int) -> list[str]:
+    def scrape(self, target_course: GolfCourse, target_date: datetime.date, player_count: int) -> List[str]:
         self._load_landing_page(target_course=target_course, player_count=player_count)
         self._filter_date(target_date=target_date)
         self._filter_course(target_course=target_course)
@@ -145,7 +145,7 @@ class GolfNowScraper():
     def _check_diffs(self) -> bool:
         return True
 
-    def _parse_results(self) -> list[str]:
+    def _parse_results(self) -> List[str]:
         html_text = self.browser.page_source
         results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
         if self.debug_mode:
@@ -165,7 +165,7 @@ class GolfNowScraper():
             print(cleaned_times)  
         return cleaned_times
 
-    def _snapshot_results(self, target_course: GolfCourse, target_date: datetime.date, results: list[str]) -> None:
+    def _snapshot_results(self, target_course: GolfCourse, target_date: datetime.date, results: List[str]) -> None:
         file_name = 'snapshots/{course}_{target_date}.html'.format(
             course=target_course.tag, target_date=target_date.strftime("%Y%m%d"))
         with open(file_name, 'w') as f:
@@ -179,7 +179,7 @@ class GolfNowScraper():
 
 
 class NotificationMessageWriter():
-    def __init__(self, results: dict[str, list[tuple[str, list[str]]]], output_file: str) -> None:
+    def __init__(self, results: dict[str, List[Tuple[str, List[str]]]], output_file: str) -> None:
         # key: course name
         # value: [(date, [times]), ...]
         self.results = results
