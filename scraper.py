@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from typing import Dict
 from typing import List
 from typing import NamedTuple
 from typing import Tuple
@@ -181,7 +182,7 @@ class GolfNowScraper():
 
 
 class NotificationMessageWriter():
-    def __init__(self, results: dict[str, List[Tuple[str, List[str]]]], output_file: str) -> None:
+    def __init__(self, results: Dict[str, List[Tuple[str, List[str]]]], output_file: str) -> None:
         # key: course name
         # value: [(date, [times]), ...]
         self.results = results
