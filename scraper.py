@@ -27,11 +27,15 @@ PLAYER_COUNT = 2
 COURSES = [
     GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
     GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
-    GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
-    GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
-    GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
+    # GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
+    # GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
+    # GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
 ]
 
+# To-dos:
+# Filter timing
+# Multithreading browsers
+# State checking -> notifications
 
 class GolfNowScraper():
     URL_TEMPLATE = (
@@ -94,6 +98,7 @@ class GolfNowScraper():
         date_btn.click()
         self._pause()
 
+        picker_nav_prev = self.browser.find_element(By.CLASS_NAME, "picker__nav--prev")
         picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
 
         # Check the year
@@ -110,13 +115,24 @@ class GolfNowScraper():
         # Check the month
         month = '{0:%B}'.format(target_date)
         picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
-        while picker_month.text != month:
+        picker_month_date_object = datetime.datetime.strptime(picker_month.text, '%B')
+        # Increase month
+        while picker_month_date_object.month < target_date.month:
             if self.debug_mode:
                 print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
             picker_nav_next.click()
-            self._pause(2)
-            picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
+            self._pause()
             picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
+            picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
+            picker_month_date_object = datetime.datetime.strptime(picker_month.text, '%B')
+        # Decrease month
+        while picker_month_date_object.month > target_date.month:
+            if self.debug_mode:
+                print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
+            picker_nav_prev.click()
+            self._pause()
+            picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
+            picker_month_date_object = datetime.datetime.strptime(picker_month.text, '%B')
         if self.debug_mode:
             print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
 
@@ -157,8 +173,6 @@ class GolfNowScraper():
     def _parse_results(self) -> List[str]:
         html_text = self.browser.page_source
         results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
-        if self.debug_mode:
-            print(results)
         if not results:
             return []
 
