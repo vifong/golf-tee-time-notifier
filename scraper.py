@@ -26,7 +26,7 @@ MESSAGE_OUTPUT_FILE = "message.txt"
 PLAYER_COUNT = 2
 COURSES = [
     GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
-    GolfCourse('12205', 'woodley-lakes-golf-course' 'Woodley Lakes Golf Course'),
+    GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
     GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
     GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
     GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
