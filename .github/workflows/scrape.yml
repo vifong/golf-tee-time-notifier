@@ -29,19 +29,6 @@ jobs:
       - name: Set env vars
         run: |
           echo "DATE=$(python -c 'import datetime as dt; print(dt.datetime.now().date())')" >> $GITHUB_ENV
-      # - name: Send mail
-      #   uses: dawidd6/action-send-mail@v3
-      #   with:
-      #     server_address: smtp.gmail.com
-      #     server_port: 465
-      #     username: ${{secrets.MAIL_USERNAME}}
-      #     password: ${{secrets.MAIL_PASSWORD}}
-      #     subject: Latest PPRA tenders for ${{env.DATE}}
-      #     to: hi@yasoob.me
-      #     from: Automated Email
-      #     ignore_cert: true
-      #     secure: true
-      #     html_body: file://ppra.html
       - name: Set message vars
         id: vars
         run: |
@@ -58,7 +45,9 @@ jobs:
         with:
           fromPhoneNumber: '+1(844)9684068'
           toPhoneNumber: ${{ secrets.PHONE_NUMBER }}
-          message: ${{ env.MSG_STRING }}
+          message: |
+            |
+            ${{ env.MSG_STRING }}
           # message: ${{ steps.vars.outputs.message }}
         env:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}

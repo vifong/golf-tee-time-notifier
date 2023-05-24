@@ -195,7 +195,7 @@ class NotificationMessageWriter():
             print("Message written to", self.output_file)
 
     def _craft(self) -> str:
-        message = "\n*** Tee Time Alert!***\n"
+        message = "*** Tee Time Alert! ***\n"
         print(self.results.items())
         for course_name, tee_times in self.results.items():
             message += "\n{course}:\n".format(course=course_name)
