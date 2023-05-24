@@ -44,7 +44,12 @@ jobs:
       #     html_body: file://ppra.html
       - name: Set message vars
         id: vars
-        run: echo "message=$(cat message.txt)" >> $GITHUB_OUTPUT
+        run: |
+          MSG_STRING=$(cat message.txt)
+          MSG_STRING="${message//'%'/'%25'}"
+          MSG_STRING="${message//$'\n'/'%0A'}"
+          MSG_STRING="${message//$'\r'/'%0D'}"
+          echo "message=$MSG_STRING" >> $GITHUB_OUTPUT
       - name: Test message output
         run: echo ${{ steps.vars.outputs.message }}
       - name: 'Sending SMS Notification'
