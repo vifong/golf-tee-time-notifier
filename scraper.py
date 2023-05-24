@@ -21,12 +21,15 @@ class GolfCourse(NamedTuple):
     name: str
 
 
+MESSAGE_OUTPUT_FILE = "message.txt"
+PLAYER_COUNT = 2
 COURSES = [
     GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
+    # GolfCourse('12205', 'woodley-lakes-golf-course' 'Woodley Lakes Golf Course'),
+    # GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
+    # GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
+    # GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
 ]
-
-PLAYER_COUNT = 2
-MESSAGE_OUTPUT_FILE = "message.txt"
 
 
 class GolfNowScraper():
@@ -208,7 +211,10 @@ class NotificationMessageWriter():
 
 # TODO(vifong)
 def compute_target_dates() -> List[datetime.date]:
-    return [datetime.date(2023, 5, 27)]
+    return [
+        datetime.date(2023, 5, 27),
+        datetime.date(2023, 6, 3),
+    ]
 
 
 def format_date(date: datetime.date) -> str:
