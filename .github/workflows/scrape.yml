@@ -39,7 +39,8 @@ jobs:
         # run: echo "message=$(cat message.txt)" >> $GITHUB_OUTPUT
       - name: Test message output
         # run: echo ${{ steps.vars.outputs.message }}
-        run: echo ${{ env.MSG_STRING }}
+        run: |
+          echo ${{ env.MSG_STRING }}
       - name: 'Sending SMS Notification'
         uses: twilio-labs/actions-sms@v1
         with:
