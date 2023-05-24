@@ -33,9 +33,10 @@ COURSES = [
 ]
 
 # To-dos:
-# Filter timing
 # Multithreading browsers
 # State checking -> notifications
+# Filter timing
+
 
 class GolfNowScraper():
     URL_TEMPLATE = (
