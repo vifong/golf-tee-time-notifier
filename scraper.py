@@ -93,29 +93,36 @@ class GolfNowScraper():
         date_btn.click()
         self._pause()
 
-        picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
-        picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")
         picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
 
-        # Check the month
-        month = '{0:%b}'.format(target_date)
-        print("target_month:", month)
-        print("picker_month:", picker_month.text)
-        while picker_month.text != month:
-            print("\ttarget_month: ", month)
-            print("\tpicker_month: ", picker_month.text)
-            picker_nav_next.click()
-
         # Check the year
-        print("target_year:", target_date.year)
-        print("picker_year:", picker_year.text)
-        if picker_year.text != str(target_date.year):
-            print("TODO: error")
+        picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")     
+        while picker_year.text != str(target_date.year):
+            if self.debug_mode:
+                print("target_year: {0}, picker_year: {1}".format(target_date.year, picker_year.text))
+            self._pause(2)
+            picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")
+            picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
+        if self.debug_mode:
+            print("target_year: {0}, picker_year: {1}".format(target_date.year, picker_year.text))
+
+        # Check the month
+        month = '{0:%B}'.format(target_date)
+        picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
+        while picker_month.text != month:
+            if self.debug_mode:
+                print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
+            picker_nav_next.click()
+            self._pause(2)
+            picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
+            picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
+        if self.debug_mode:
+            print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
 
         # Select the day
         picker_day = self.browser.find_element(By.XPATH, "//div[@aria-label='{date}']".format(date=target_date.strftime("%a, %b %d")))
-        print("target_day:", target_date.day)
-        print("picker_day:", picker_day.text)
+        if self.debug_mode:
+            print("target_day: {0}, picker_day: {1}".format(target_date.day, picker_day.text))
         picker_day.click()
         self._pause()
 
@@ -212,7 +219,7 @@ class NotificationMessageWriter():
 # TODO(vifong)
 def compute_target_dates() -> List[datetime.date]:
     return [
-        datetime.date(2023, 5, 27),
+        # datetime.date(2023, 5, 27),
         datetime.date(2023, 6, 3),
     ]
 
