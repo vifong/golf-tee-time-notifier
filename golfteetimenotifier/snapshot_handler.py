@@ -8,6 +8,7 @@ from typing import Tuple
 import datetime as dt
 import filecmp
 import json
+import numpy as np
 import os
 import pandas as pd
 import pickle
@@ -20,14 +21,17 @@ TMP_SUBDIR = os.path.join(SNAPSHOTS_DIR, "tmp")
 class SnapshotHandler():
     def __init__(self, data_df: pd.DataFrame) -> None:
         self.data_df = data_df
+        self.data_df.reset_index(drop=True, inplace=True)   
     #     self.clean_stale_snapshots()
 
     def has_new_data(self) -> bool:
         prev_snapshot_df = self._load_snapshot_df()
+        prev_snapshot_df.reset_index(drop=True, inplace=True)
+
         # No prior data.
         if prev_snapshot_df.empty:
             print("No previous snapshot; writing data to file.")
-            self.write_snapshot_df()
+            self._write_snapshot_df()
             return True
 
         # No changes.
@@ -35,7 +39,14 @@ class SnapshotHandler():
             print("No changes in data from snapshot.")
             return False
 
-        print("Changes in snapshots.")
+        # There are diffs in the snapshots.
+        # V2: Determine whether it's a notification-worthy change: New tee-time added.   
+        print("Diffs in snapshots.")
+        has_notable_diffs = self._compare_snapshot_df(prev_snapshot_df)        
+
+        # self._clear_snapshots_dir()
+        # self._write_snapshot_df()
+
         return True
 
     def _load_snapshot_df(self) -> pd.DataFrame:
@@ -46,7 +57,34 @@ class SnapshotHandler():
                     return pd.read_pickle(os.path.join(SNAPSHOTS_DIR, file_name))
         return pd.DataFrame()
 
-    def write_snapshot_df(self) -> None:
+    def _compare_snapshot_df(self, prev_snapshot_df: pd.DataFrame) -> bool:
+        print("\nprev_snapshot_df")
+        print(prev_snapshot_df)
+        print("\ndata_df")
+        print(self.data_df)
+
+
+        diff_df = pd.concat([prev_snapshot_df, self.data_df]).drop_duplicates(keep=False)
+        print("\ndiff_df")
+        print(diff_df)
+
+        merged_df = pd.merge(diff_df, prev_snapshot_df, how='left', indicator='Exists')
+        print("\nmerged_df")
+        print(merged_df)
+        # merged_df['Exist'] = np.where(merged_df['Exist'] == 'both', True, False)
+        # print(merged_df)
+
+        # for row in diff_df.iterrows():
+        #     # If row was NOT in prev snapshot, this is a new addition to report.
+        #     if row not in prev_snapshot_df:
+        #         print("Not in prev snapshot:", row)
+        #         return True
+        return False
+
+
+        print(self.data_df.compare(prev_snapshot_df))
+
+    def _write_snapshot_df(self) -> None:
         timestamp = dt.datetime.now()
         pickle_path = os.path.join(SNAPSHOTS_DIR, '{timestamp}.pickle'.format(timestamp=timestamp))
         csv_path = os.path.join(SNAPSHOTS_DIR, '{timestamp}.csv'.format(timestamp=timestamp))
@@ -55,6 +93,10 @@ class SnapshotHandler():
             print("Pickled data into {path}...".format(path=pickle_path))
         self.data_df.to_csv(csv_path)
         print("Dumped data into {path}...".format(path=csv_path))
+
+    def _clear_snapshots_dir(self) -> None:
+        print("Deleting", SNAPSHOTS_DIR)
+        rmtree(SNAPSHOTS_DIR)
 
     # def clean_stale_snapshots(self) -> None:
     #     if os.path.exists(TMP_SUBDIR):

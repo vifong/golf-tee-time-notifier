@@ -165,7 +165,7 @@ class GolfNowScraper():
             if self.all_times or time.hour < latest_hour:
                 df_data.append([target_course.name, target_date, time])
 
-        df = pd.DataFrame(df_data, columns=['course', 'date', 'tee_time'])
+        df = pd.DataFrame(df_data, columns=['Course', 'Date', 'Tee Time'])
         if self.debug_mode:
             print(df)    
         return df

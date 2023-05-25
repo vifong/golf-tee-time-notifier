@@ -10,7 +10,7 @@ MESSAGE_OUTPUT_FILE = "output/message.txt"
 
 class NotificationMessageWriter():
     def __init__(self, data_df: pd.DataFrame) -> None:
-        self.grouped_df = data_df.groupby(['course', 'date'])['tee_time'].apply(list)
+        self.grouped_df = data_df.groupby(['Course', 'Date'])['Tee Time'].apply(list)
         print(self.grouped_df)
 
     def write(self) -> str:
