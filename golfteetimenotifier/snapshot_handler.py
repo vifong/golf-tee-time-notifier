@@ -1,4 +1,5 @@
 from scraper import GolfCourse
+from shutil import rmtree
 from typing import Dict
 from typing import List
 from typing import NamedTuple
@@ -14,13 +15,13 @@ SNAPSHOTS_DIRECTORY = "output/snapshots"
 def delete_stale_snapshots() -> None:
     today = datetime.date.today()
     for _, subdirs, _ in os.walk(SNAPSHOTS_DIRECTORY):
-    for subdir in subdirs:
-        dir_path = os.path.join(SNAPSHOTS_DIRECTORY, subdir)
-        snapshot_date = datetime.datetime.strptime(subdir, "%Y%m%d")
-        # Delete directories of dates that already passed
-        if snapshot_date.date() < today:
-            print("Deleting", dir_path)
-            rmtree(dir_path)
+        for subdir in subdirs:
+            dir_path = os.path.join(SNAPSHOTS_DIRECTORY, subdir)
+            snapshot_date = datetime.datetime.strptime(subdir, "%Y%m%d")
+            # Delete directories of dates that already passed
+            if snapshot_date.date() < today:
+                print("Deleting", dir_path)
+                rmtree(dir_path)
 
 
 def snapshot_results(target_course: GolfCourse, target_date: datetime.date, 

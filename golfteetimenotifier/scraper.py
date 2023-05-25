@@ -1,23 +1,25 @@
-from queue import Queue
+from collections import defaultdict
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from shutil import rmtree
 from typing import Dict
 from typing import List
 from typing import NamedTuple
 from typing import Tuple
-import argparse
-import calendar
+from queue import Queue
 import datetime
-import json
-import os
 import re
 import time
 import threading
+
+
+class GolfCourse(NamedTuple):
+    id: str
+    tag: str
+    name: str
 
 
 class GolfNowScraper():
@@ -40,18 +42,18 @@ class GolfNowScraper():
     def scrape(self, target_course: GolfCourse, target_date: datetime.date, 
                      player_count: int, latest_hour: int) -> List[str]:
         self._load_landing_page(target_course=target_course, player_count=player_count)
-        self._filter_date(target_date=target_date)
-        self._filter_course(target_course=target_course)
-        self._filter_player_count(player_count=player_count)
+        self._filter_date(target_date)
+        self._filter_course(target_course)
+        self._filter_player_count(player_count)
         # self._validate_results(target_course=target_course, target_date=target_date)
-        return self._parse_results()
+        return self._parse_results(latest_hour)
         
     def close(self):
         self.browser.close()
 
     def _load_landing_page(self, target_course: GolfCourse, player_count: int) -> None:
         url = self.URL_TEMPLATE.format(
-            course_id=target_course.id, course_tag=target_course.tag, player_count=PLAYER_COUNT,
+            course_id=target_course.id, course_tag=target_course.tag, player_count=player_count,
             end_hour=self.END_HOUR_3PM if self.filter_times else self.END_HOUR_9PM)             
         self.browser = webdriver.Chrome(options=self.chrome_options)
         self.browser.get(url)
@@ -143,7 +145,7 @@ class GolfNowScraper():
         print("\ttarget_date:", formatted_date)
         return target_course == course_result and formatted_date == date_result
 
-    def _parse_results(self) -> List[datetime.date]:
+    def _parse_results(self, latest_hour: int) -> List[datetime.date]:
         html_text = self.browser.page_source
         results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
         if not results:
@@ -157,9 +159,7 @@ class GolfNowScraper():
             cleaned_str = re.sub('</sub>', '', cleaned_str)
             cleaned_str = re.sub('\'', '', cleaned_str)
             time = datetime.datetime.strptime(cleaned_str, "%I:%M%p")
-
-            # TODO(vifong): Filter out times after 5pm
-            if time.hour < LATEST_HOUR:
+            if time.hour < latest_hour:
                 times.append(time)
 
         if self.debug_mode:
@@ -172,33 +172,28 @@ class GolfNowScraper():
 
 class ScrapeThread(threading.Thread):
     def __init__(self, target_course: GolfCourse, target_dates: List[datetime.date], 
-                                         player_count: int, accumulated_results: Queue, 
-                                         debug_mode=False, filter_times=False) -> None:
+                       player_count: int, latest_hour: int, results_queue: Queue, 
+                       debug_mode=False, filter_times=False) -> None:
         threading.Thread.__init__(self)
         self.target_course = target_course
         self.target_dates = target_dates
         self.player_count = player_count
+        self.latest_hour = latest_hour
         self.debug_mode = debug_mode
         self.filter_times = filter_times
         self.results_queue = results_queue
 
     def run(self) -> None:
         print("Running {course} thread...".format(course=self.target_course.name))
-        scraper = GolfNowScraper(debug_mode=args.debug, filter_times=args.filter_times)
+        scraper = GolfNowScraper(debug_mode=self.debug_mode, filter_times=self.filter_times)
         results = defaultdict(list)
-        for date in target_dates:
+        for date in self.target_dates:
             print("Thread {course} scraping {date}...".format(
                 course=self.target_course.tag, date=date))
-            times = scraper.scrape(
-                target_course=self.target_course, target_date=date, player_count=self.player_count)
+            times = scraper.scrape(target_course=self.target_course, target_date=date, 
+                                   player_count=self.player_count, latest_hour=self.latest_hour)
             if times:
                 results[self.target_course.name].append((date, times))
         self.results_queue.put(results)
         scraper.close()
-
-
-class GolfCourse(NamedTuple):
-    id: str
-    tag: str
-    name: str
 

@@ -11,7 +11,9 @@ from scraper import GolfCourse
 from scraper import GolfNowScraper
 from scraper import ScrapeThread
 from shutil import rmtree
+from queue import Queue
 import argparse
+import calendar
 import datetime
 import time
 
@@ -21,10 +23,10 @@ PLAYER_COUNT = 2
 LATEST_HOUR = 17
 COURSES = [
     GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
-    GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
-    GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
-    GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
-    GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
+    # GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
+    # GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
+    # GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
+    # GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
 ]
 
 
@@ -45,16 +47,17 @@ def compute_target_dates() -> List[datetime.date]:
         if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
             weekends.append(candidate_date)
         candidate_date = candidate_date + datetime.timedelta(1)
-    print("target_dates:", d)
+    print("target_dates:", weekends)
     return weekends
+
 
 def run_scrape(target_dates: List[datetime.date], debug_mode: bool, filter_times: bool) -> Queue:
     results_queue = Queue()
     threads = []
     for course in COURSES:
-        t = ScrapeThread(
-            target_course=course, target_dates=target_dates, player_count=PLAYER_COUN
-            accumulated_results=results_queue, debug_mode=debug_mode, filter_times=filter_times)
+        t = ScrapeThread(target_course=course, target_dates=target_dates, player_count=PLAYER_COUNT,
+                         latest_hour=LATEST_HOUR, results_queue=results_queue, 
+                         debug_mode=debug_mode, filter_times=filter_times)
         threads.append(t)
         t.start()
     for t in threads:
@@ -62,8 +65,8 @@ def run_scrape(target_dates: List[datetime.date], debug_mode: bool, filter_times
     return results_queue
 
 
-def aggregate_results(results_queue: Queue) 
-        -> Dict[str, List[Tuple[datetime.date, List[datetime.date]]]]:
+def aggregate_results(results_queue: Queue) -> (
+        Dict[str, List[Tuple[datetime.date, List[datetime.date]]]]):
     aggregated_results = defaultdict(list)
     while not results_queue.empty():
         aggregated_results.update(results_queue.get())
@@ -85,11 +88,11 @@ if __name__ == '__main__':
     target_dates = compute_target_dates()
     results_queue = run_scrape(
         target_dates=target_dates, debug_mode=args.debug, filter_times=args.filter_times)
-    aggregated_results = aggregated_results(results_queue)
+    aggregated_results = aggregate_results(results_queue)
 
     # Compare state and snapshot results. Determine whether to send notification.
-    snapshot_differ = SnapshotDiffer(aggregated_results)
-    snapshot_differ.has_new_times()
+    # snapshot_differ = SnapshotDiffer(aggregated_results)
+    # snapshot_differ.has_new_times()
 
     # Write notification message.
     # message_writer = NotificationMessageWriter(results=accumulated_results, output_file=MESSAGE_OUTPUT_FILE)
