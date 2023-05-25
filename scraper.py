@@ -39,6 +39,7 @@ COURSES = [
 # State checking -> notifications
 # Filter timing
 # Delete old snapshots when date has passed
+# Add a way to ignore a date
 
 class GolfNowScraper():
     URL_TEMPLATE = (
@@ -221,7 +222,7 @@ class NotificationMessageWriter():
         message = "*** Tee Times Alert! ***\n"
         print(self.results.items())
         for course_name, tee_times in self.results.items():
-            message += "\n{course}\n".format(course=course_name)
+            message += "\n{course}\n".format(course=course_name.replace(" Golf Course", ''))
             for date, times in tee_times:
                 message += "{date} {times}\n".format(
                     date=format_date(date), times=self._format_times(times))
@@ -230,7 +231,7 @@ class NotificationMessageWriter():
         return message
 
     def _format_times(self, times: List[str]) -> str:
-        return str(times).replace(' ', '').replace('\'', '')
+        return str(times).lower().replace(' ', '').replace('\'', '').replace('m', '')
 
 
 class ScrapeThread(threading.Thread):
