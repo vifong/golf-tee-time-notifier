@@ -89,7 +89,8 @@ if __name__ == '__main__':
     print(aggregated_df)
 
     # Compare snapshots to determine whether to send a notification.
-    # snapshot_handler = SnapshotHandler(aggregated_df)    
+    snapshot_handler = SnapshotHandler(data_df=aggregated_df)    
+    snapshot_handler.write_snapshot_df()
     # snapshot_handler.snapshot_results()   
     # snapshot_handler.diff_snapshots() 
 
