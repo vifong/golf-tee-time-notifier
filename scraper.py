@@ -35,7 +35,6 @@ COURSES = [
 ]
 
 # To-dos:
-# Multithreading browsers
 # State checking -> notifications
 # Filter timing
 # Delete old snapshots when date has passed
@@ -194,7 +193,7 @@ class GolfNowScraper():
 
     def _snapshot_results(self, target_course: GolfCourse, target_date: datetime.date, results: List[str]) -> None:
         metadata = {
-            "course": course.tag
+            "course": course.tag,
             "target_date": target_date,
             "timestamp": datetime.datetime.now(),
             "tee_times": results
