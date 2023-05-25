@@ -10,8 +10,9 @@ from typing import List
 from typing import NamedTuple
 from typing import Tuple
 from queue import Queue
-import datetime
+import datetime as dt
 import re
+import pandas as pd
 import time
 import threading
 
@@ -30,23 +31,24 @@ class GolfNowScraper():
     END_HOUR_9PM = 42
     END_HOUR_3PM = 30
 
-    def __init__(self, debug_mode=False, filter_times=False) -> None:
+    def __init__(self, debug_mode=False, all_times=False) -> None:
         self.debug_mode = debug_mode
-        self.filter_times = filter_times
+        self.all_times = all_times
         self.chrome_options = Options()
         if not debug_mode:
             self.chrome_options.add_argument("--no-sandbox")
             self.chrome_options.add_argument("--disable-dev-shm-usage")
             self.chrome_options.add_argument("--headless")
 
-    def scrape(self, target_course: GolfCourse, target_date: datetime.date, 
+    def scrape(self, target_course: GolfCourse, target_date: dt.date, 
                      player_count: int, latest_hour: int) -> List[str]:
         self._load_landing_page(target_course=target_course, player_count=player_count)
         self._filter_date(target_date)
         self._filter_course(target_course)
         self._filter_player_count(player_count)
         # self._validate_results(target_course=target_course, target_date=target_date)
-        return self._parse_results(latest_hour)
+        return self._parse_results(
+            target_course=target_course, target_date=target_date, latest_hour=latest_hour)
         
     def close(self):
         self.browser.close()
@@ -54,7 +56,7 @@ class GolfNowScraper():
     def _load_landing_page(self, target_course: GolfCourse, player_count: int) -> None:
         url = self.URL_TEMPLATE.format(
             course_id=target_course.id, course_tag=target_course.tag, player_count=player_count,
-            end_hour=self.END_HOUR_3PM if self.filter_times else self.END_HOUR_9PM)             
+            end_hour=self.END_HOUR_3PM if self.all_times else self.END_HOUR_9PM)             
         self.browser = webdriver.Chrome(options=self.chrome_options)
         self.browser.get(url)
         self.browser.maximize_window()
@@ -71,7 +73,7 @@ class GolfNowScraper():
         parent_element.click()
         self._pause()
 
-    def _filter_date(self, target_date: datetime.date) -> None:
+    def _filter_date(self, target_date: dt.date) -> None:
         date_btn = self.browser.find_element(By.ID, "fed-search-big-date")
         date_btn.click()
         self._pause()
@@ -93,7 +95,7 @@ class GolfNowScraper():
         # Check the month
         month = '{0:%B}'.format(target_date)
         picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
-        picker_month_date_object = datetime.datetime.strptime(picker_month.text, '%B')
+        picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
         # Increase month
         while picker_month_date_object.month < target_date.month:
             if self.debug_mode:
@@ -102,7 +104,7 @@ class GolfNowScraper():
             self._pause()
             picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
             picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
-            picker_month_date_object = datetime.datetime.strptime(picker_month.text, '%B')
+            picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
         # Decrease month
         while picker_month_date_object.month > target_date.month:
                 if self.debug_mode:
@@ -110,7 +112,7 @@ class GolfNowScraper():
                 picker_nav_prev.click()
                 self._pause()
                 picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
-                picker_month_date_object = datetime.datetime.strptime(picker_month.text, '%B')
+                picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
         if self.debug_mode:
                 print("target_month:{0}, picker_month:{1}".format(month, picker_month.text))
 
@@ -134,7 +136,7 @@ class GolfNowScraper():
         # print("Search results rendered.")     
 
     # TODO(vifong)
-    def _validate_results(self, target_course: GolfCourse, target_date: datetime.date) -> bool:
+    def _validate_results(self, target_course: GolfCourse, target_date: dt.date) -> bool:
         course_result = self.browser.find_element(By.ID, "fedresults").text
         date_result = self.browser.find_element(By.ID, "search-header-date").text
         formatted_date = target_date.strftime("%a, %b %d")
@@ -145,55 +147,58 @@ class GolfNowScraper():
         print("\ttarget_date:", formatted_date)
         return target_course == course_result and formatted_date == date_result
 
-    def _parse_results(self, latest_hour: int) -> List[datetime.date]:
+    def _parse_results(self, target_course: GolfCourse, target_date: dt.date, 
+                             latest_hour: int) -> pd.DataFrame: 
         html_text = self.browser.page_source
         results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
         if not results:
             return []
 
-        times = []
+        df_data = []
         for result in results:
             cleaned_str = result.strip()
             cleaned_str = re.sub('<script (.+?)</script>', '', cleaned_str)
             cleaned_str = re.sub('<sub>', '', cleaned_str)
             cleaned_str = re.sub('</sub>', '', cleaned_str)
             cleaned_str = re.sub('\'', '', cleaned_str)
-            time = datetime.datetime.strptime(cleaned_str, "%I:%M%p")
-            if not self.filter_times or time.hour < latest_hour:
-                times.append(time)
+            time = dt.datetime.strptime(cleaned_str, "%I:%M%p").time()
+            if self.all_times or time.hour < latest_hour:
+                df_data.append([target_course.name, target_date, time])
 
+        df = pd.DataFrame(df_data, columns=['Course', 'Date', 'Tee Time'])
         if self.debug_mode:
-            print(times)    
-        return times
+            print(df)    
+        return df
 
     def _pause(self, secs=1) -> None:
         time.sleep(secs)
 
 
 class ScrapeThread(threading.Thread):
-    def __init__(self, target_course: GolfCourse, target_dates: List[datetime.date], 
+    def __init__(self, target_course: GolfCourse, target_dates: List[dt.date], 
                        player_count: int, latest_hour: int, results_queue: Queue, 
-                       debug_mode=False, filter_times=False) -> None:
+                       debug_mode=False, all_times=False) -> None:
         threading.Thread.__init__(self)
         self.target_course = target_course
         self.target_dates = target_dates
         self.player_count = player_count
         self.latest_hour = latest_hour
         self.debug_mode = debug_mode
-        self.filter_times = filter_times
+        self.all_times = all_times
         self.results_queue = results_queue
 
     def run(self) -> None:
         print("Running {course} thread...".format(course=self.target_course.tag))
-        scraper = GolfNowScraper(debug_mode=self.debug_mode, filter_times=self.filter_times)
+        scraper = GolfNowScraper(debug_mode=self.debug_mode, all_times=self.all_times)
 
         for date in self.target_dates:
             print("Thread {course} scraping {date}...".format(
                 course=self.target_course.tag, date=date))
-            times = scraper.scrape(target_course=self.target_course, target_date=date, 
-                                   player_count=self.player_count, latest_hour=self.latest_hour)
-            if times:
-                self.results_queue.put((self.target_course, date, times))
+            tee_times_df = scraper.scrape(
+                target_course=self.target_course, target_date=date, 
+                player_count=self.player_count, latest_hour=self.latest_hour)
+            if not tee_times_df.empty:
+                self.results_queue.put(tee_times_df)
 
         scraper.close()
 

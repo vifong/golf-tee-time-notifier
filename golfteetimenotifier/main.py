@@ -12,7 +12,8 @@ from shutil import rmtree
 from queue import Queue
 import argparse
 import calendar
-import datetime
+import datetime as dt
+import pandas as pd
 import time
 
 
@@ -31,31 +32,30 @@ COURSES = [
 def init_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", action='store_true')
-    # TODO(vifong): Don't think this works because it gets reset after Search.
-    parser.add_argument("--filter-times", action='store_true')
+    parser.add_argument("--all-times", action='store_true')
     return parser.parse_args()
 
 
-def compute_target_dates() -> List[datetime.date]:
+def compute_target_dates() -> List[dt.date]:
     weekends = []
-    today = datetime.date.today()
-    last_date = today + datetime.timedelta(DATE_WINDOW)
+    today = dt.date.today()
+    last_date = today + dt.timedelta(DATE_WINDOW)
     candidate_date = today
     while candidate_date <= last_date:
         if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
             weekends.append(candidate_date)
-        candidate_date = candidate_date + datetime.timedelta(1)
+        candidate_date = candidate_date + dt.timedelta(1)
     print("target_dates:", weekends)
     return weekends
 
 
-def run_scrape(target_dates: List[datetime.date], debug_mode: bool, filter_times: bool) -> Queue:
+def run_scrape(target_dates: List[dt.date], debug_mode: bool, all_times: bool) -> Queue:
     results_queue = Queue()
     threads = []
     for course in COURSES:
         t = ScrapeThread(target_course=course, target_dates=target_dates, player_count=PLAYER_COUNT,
                          latest_hour=LATEST_HOUR, results_queue=results_queue, 
-                         debug_mode=debug_mode, filter_times=filter_times)
+                         debug_mode=debug_mode, all_times=all_times)
         threads.append(t)
         t.start()
     for t in threads:
@@ -63,15 +63,14 @@ def run_scrape(target_dates: List[datetime.date], debug_mode: bool, filter_times
     return results_queue
 
 
-def aggregate_results(results_queue: Queue) -> (
-        Dict[datetime.date, List[Tuple[GolfCourse, List[datetime.date]]]]):
-    aggregated_results = defaultdict(list)
+def aggregate_results(results_queue: Queue) -> pd.DataFrame:
+    aggregated_df = pd.DataFrame()
     while not results_queue.empty():
-        course, date, times = results_queue.get()
-        aggregated_results[date].append((course, times))
+        course_df = results_queue.get()
+        aggregated_df = pd.concat([aggregated_df, course_df], ignore_index=True)
     if args.debug:
-        print("\naggregated_results:\n", aggregated_results)
-    return aggregated_results
+        print("\naggregated_results:\n", aggregated_df)
+    return aggregated_df
 
 
 # To-dos:
@@ -84,13 +83,15 @@ if __name__ == '__main__':
     # Prepare and run scrape and collect results.
     target_dates = compute_target_dates()
     results_queue = run_scrape(
-        target_dates=target_dates, debug_mode=args.debug, filter_times=args.filter_times)
-    aggregated_results = aggregate_results(results_queue)
+        target_dates=target_dates, debug_mode=args.debug, all_times=args.all_times)
+    aggregated_df = aggregate_results(results_queue)
+
+    print(aggregated_df)
 
     # Compare snapshots to determine whether to send a notification.
-    snapshot_handler = SnapshotHandler(aggregated_results)    
-    snapshot_handler.snapshot_results()   
-    snapshot_handler.diff_snapshots() 
+    # snapshot_handler = SnapshotHandler(aggregated_df)    
+    # snapshot_handler.snapshot_results()   
+    # snapshot_handler.diff_snapshots() 
 
     # Write notification message.
     # message_writer = NotificationMessageWriter(results=accumulated_results, output_file=MESSAGE_OUTPUT_FILE)
