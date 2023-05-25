@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from shutil import rmtree
 from typing import Dict
 from typing import List
 from typing import NamedTuple
@@ -26,6 +27,7 @@ class GolfCourse(NamedTuple):
     name: str
 
 
+SNAPSHOTS_DIRECTORY = "snapshots"
 MESSAGE_OUTPUT_FILE = "message.txt"
 NUM_DAYS_AHEAD = 7
 PLAYER_COUNT = 2
@@ -40,8 +42,6 @@ COURSES = [
 
 # To-dos:
 # State checking -> notifications
-# Filter timing
-# Delete old snapshots when date has passed
 # Add a way to ignore a date
 
 class GolfNowScraper():
@@ -84,10 +84,6 @@ class GolfNowScraper():
         self.browser.get(url)
         self.browser.maximize_window()
         self._pause()
-
-    # # TODO(vifong): TURN ON FILTERING TIMES
-    # def _filter_time(self) -> None:
-    #     # pass
 
     def _filter_player_count(self, player_count: int) -> None:
         golfers_btn = self.browser.find_element(By.XPATH, "//a[@title='Golfers']")
@@ -208,7 +204,8 @@ class GolfNowScraper():
             "timestamp": str(datetime.datetime.now()),
             "tee_times": [ t.strftime("%H:%M") for t in results]
         }
-        subdir = "snapshots/{target_date}".format(target_date=target_date.strftime("%Y%m%d"))
+        subdir = "{root}/{target_date}".format(
+            root=SNAPSHOTS_DIRECTORY, target_date=target_date.strftime("%Y%m%d"))
         if not os.path.exists(subdir):
             print("Creating directory", subdir)
             os.makedirs(subdir)
@@ -293,12 +290,25 @@ def compute_target_dates() -> List[datetime.date]:
         if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
             weekends.append(candidate_date)
         candidate_date = candidate_date + datetime.timedelta(1)
+    print("target_dates:", [format_date(d) for d in weekends])
     return weekends
 
 
 def format_date(date: datetime.date) -> str:
     return date.strftime("%a, %b %d")   
 
+
+def delete_stale_snapshots() -> None:
+    today = datetime.date.today()
+    for _, subdirs, _ in os.walk(SNAPSHOTS_DIRECTORY):
+        for subdir in subdirs:
+            dir_path = os.path.join(SNAPSHOTS_DIRECTORY, subdir)
+            date = datetime.datetime.strptime(subdir, "%Y%m%d")
+            # Delete directories of dates that already passed
+            print("{0} (date) vs. {1} (today)".format(date.date(), today))
+            if date.date() < today:
+                print("Deleting", dir_path)
+                rmtree(dir_path)
 
 
 if __name__ == '__main__':
@@ -308,8 +318,8 @@ if __name__ == '__main__':
     parser.add_argument("--filter-times", action='store_true')
     args = parser.parse_args()
 
+    delete_stale_snapshots()
     target_dates = compute_target_dates()
-    print("target_dates:", [format_date(d) for d in target_dates])
 
     results_queue = Queue()
     threads = []
