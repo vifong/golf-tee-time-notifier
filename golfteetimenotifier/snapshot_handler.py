@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from scraper import GolfCourse
 from shutil import rmtree
 from typing import Dict
@@ -5,6 +6,7 @@ from typing import List
 from typing import NamedTuple
 from typing import Tuple
 import datetime
+import filecmp
 import json
 import os
 
@@ -17,6 +19,7 @@ class SnapshotHandler():
     def __init__(self, aggregated_results: (
             Dict[datetime.date, List[Tuple[GolfCourse, List[datetime.date]]]])) -> None:
         self.aggregated_results = aggregated_results
+        self.clean_stale_snapshots()
 
     def clean_stale_snapshots(self) -> None:
         if os.path.exists(TMP_SUBDIR):
@@ -32,14 +35,31 @@ class SnapshotHandler():
                     print("Deleting", file_path)
                     rmtree(file_path)
 
-    def diff_snapshots(self) -> None:
-        pass
-
     def snapshot_results(self, is_tmp=True) -> None:
         for date, results in self.aggregated_results.items():
             json_data = self._convert_to_json_data(results)
             dir_path = TMP_SUBDIR if is_tmp else SNAPSHOTS_DIR 
             self._write_json_to_file(dir_path=dir_path, target_date=date, json_data=json_data)
+
+
+    def diff_snapshots(self) -> None:
+        for _, _, tmp_files in os.walk(TMP_SUBDIR):
+            print(tmp_files)
+            for file_name in tmp_files:
+                tmp_snapshot = os.path.join(TMP_SUBDIR, file_name)
+                prev_snapshot = os.path.join(SNAPSHOTS_DIR, file_name))
+                if self._has_diffs(path1=tmp_snapshot, path2=prev_snapshot:
+                    print("{0} has diffs!".format(file_name))
+                else:
+                    print("{0} and {1} are the same.".format(tmp_snapshot, prev_snapshot))
+
+
+    def _extract_diffs(self, path1: str, path2: str) -> str:
+        pass
+
+    def _has_diffs(self, path1: str, path2: str) -> bool:
+        return not filecmp.cmp(path1, path2)
+
 
     def _write_json_to_file(self, dir_path: str,
                                   target_date: datetime.date, 
@@ -55,8 +75,9 @@ class SnapshotHandler():
 
     def _convert_to_json_data(
         self, results: List[Tuple[GolfCourse, List[datetime.date]]]) -> Dict[str, List[str]]:
-        json_data = {}
-        for course, tee_times in results:
+        json_data = OrderedDict()
+        sorted_results = sorted(results)
+        for course, tee_times in sorted_results:
             json_data[course.tag] = [ t.strftime("%H:%M") for t in tee_times ]
         return json_data
 

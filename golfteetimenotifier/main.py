@@ -20,11 +20,11 @@ DATE_WINDOW = 7
 PLAYER_COUNT = 2
 LATEST_HOUR = 17
 COURSES = [
-    # GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
-    # GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
-    GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
-    # GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
-    GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
+    # GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203', ),
+    GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205' ),
+    GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
+    # GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
+    GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
 ]
 
 
@@ -81,18 +81,16 @@ if __name__ == '__main__':
     # Setup flags.
     args = init_args()
 
-
-
     # Prepare and run scrape and collect results.
     target_dates = compute_target_dates()
     results_queue = run_scrape(
         target_dates=target_dates, debug_mode=args.debug, filter_times=args.filter_times)
     aggregated_results = aggregate_results(results_queue)
 
+    # Compare snapshots to determine whether to send a notification.
     snapshot_handler = SnapshotHandler(aggregated_results)    
-    snapshot_handler.clean_stale_snapshots()    
-    snapshot_handler.snapshot_results()    
-
+    snapshot_handler.snapshot_results()   
+    snapshot_handler.diff_snapshots() 
 
     # Write notification message.
     # message_writer = NotificationMessageWriter(results=accumulated_results, output_file=MESSAGE_OUTPUT_FILE)

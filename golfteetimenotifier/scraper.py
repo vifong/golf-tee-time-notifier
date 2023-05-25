@@ -17,9 +17,9 @@ import threading
 
 
 class GolfCourse(NamedTuple):
-    id: str
-    tag: str
     name: str
+    tag: str
+    id: str
 
 
 class GolfNowScraper():
