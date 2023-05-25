@@ -41,7 +41,7 @@ class GolfNowScraper():
             self.chrome_options.add_argument("--headless")
 
     def scrape(self, target_course: GolfCourse, target_date: dt.date, 
-                     player_count: int, latest_hour: int) -> List[str]:
+                     player_count: int, latest_hour: int) -> pd.DataFrame:
         self._load_landing_page(target_course=target_course, player_count=player_count)
         self._filter_date(target_date)
         self._filter_course(target_course)
@@ -165,7 +165,7 @@ class GolfNowScraper():
             if self.all_times or time.hour < latest_hour:
                 df_data.append([target_course.name, target_date, time])
 
-        df = pd.DataFrame(df_data, columns=['Course', 'Date', 'Tee Time'])
+        df = pd.DataFrame(df_data, columns=['course', 'date', 'tee_time'])
         if self.debug_mode:
             print(df)    
         return df
