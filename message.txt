@@ -1,5 +1,13 @@
 ***Tee Times Alert!***
 
+WOODLEY LAKES
+Sat, May 27 ['04:00PM','04:10PM','04:40PM','04:50PM']
+Sun, May 28 ['04:40PM','04:50PM']
+
+ENCINO
+Sat, May 27 ['04:35PM','04:45PM','04:55PM']
+Sun, May 28 ['04:05PM','04:45PM','04:55PM']
+
 HANSEN DAM
 Sat, May 27 ['04:30PM','04:50PM']
 Sun, May 28 ['05:30AM','04:30PM']
@@ -7,11 +15,3 @@ Sun, May 28 ['05:30AM','04:30PM']
 BALBOA
 Sat, May 27 ['06:10AM','04:10PM','04:50PM']
 Sun, May 28 ['04:40PM','04:50PM']
-
-WOODLEY LAKES
-Sat, May 27 ['03:10PM','04:00PM','04:10PM','04:40PM','04:50PM']
-Sun, May 28 ['04:40PM','04:50PM']
-
-ENCINO
-Sat, May 27 ['04:35PM','04:45PM','04:55PM']
-Sun, May 28 ['04:05PM','04:45PM','04:55PM']

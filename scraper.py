@@ -14,6 +14,7 @@ import argparse
 import calendar
 import datetime
 import json
+import os
 import re
 import time
 import threading
@@ -207,11 +208,14 @@ class GolfNowScraper():
             "timestamp": str(datetime.datetime.now()),
             "tee_times": [ t.strftime("%H:%M") for t in results]
         }
-        file_name = 'snapshots/{course}_{target_date}.json'.format(
-            course=target_course.tag, target_date=target_date.strftime("%Y%m%d"))
-        with open(file_name, 'w') as f:
+        subdir = "snapshots/{target_date}".format(target_date=target_date.strftime("%Y%m%d"))
+        if not os.path.exists(subdir):
+            print("Creating directory", subdir)
+            os.makedirs(subdir)
+        file_path = os.path.join(subdir, "{course}.json".format(course=target_course.tag))
+        with open(file_path, 'w') as f:
             f.write(json.dumps(metadata, indent=2))
-            print("Snapshot written to", file_name)
+            print("Snapshot written to", file_path)
 
 
     def _pause(self, secs=1) -> None:
