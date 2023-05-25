@@ -47,8 +47,8 @@ class SnapshotHandler():
             print(tmp_files)
             for file_name in tmp_files:
                 tmp_snapshot = os.path.join(TMP_SUBDIR, file_name)
-                prev_snapshot = os.path.join(SNAPSHOTS_DIR, file_name))
-                if self._has_diffs(path1=tmp_snapshot, path2=prev_snapshot:
+                prev_snapshot = os.path.join(SNAPSHOTS_DIR, file_name)
+                if self._has_diffs(path1=tmp_snapshot, path2=prev_snapshot):
                     print("{0} has diffs!".format(file_name))
                 else:
                     print("{0} and {1} are the same.".format(tmp_snapshot, prev_snapshot))
