@@ -24,6 +24,25 @@ def delete_stale_snapshots() -> None:
                 rmtree(dir_path)
 
 
+def snapshot_results(target_date: datetime.date, 
+                     results: List[datetime.date]) -> None:
+    metadata = {
+        "course": course.tag,
+        "target_date": str(target_date),
+        "timestamp": str(datetime.datetime.now()),
+        "tee_times": [ t.strftime("%H:%M") for t in results ]
+    }
+    subdir = "{root}/{target_date}".format(
+        root=SNAPSHOTS_DIRECTORY, target_date=target_date.strftime("%Y%m%d"))
+    if not os.path.exists(subdir):
+        print("Creating directory", subdir)
+        os.makedirs(subdir)
+    file_path = os.path.join(subdir, "{course}.json".format(course=target_course.tag))
+    with open(file_path, 'w') as f:
+        f.write(json.dumps(metadata, indent=2))
+        print("Snapshot written to", file_path)
+
+
 def snapshot_results(target_course: GolfCourse, target_date: datetime.date, 
                      results: List[datetime.date]) -> None:
     metadata = {

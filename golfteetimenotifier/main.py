@@ -18,15 +18,15 @@ import datetime
 import time
 
 
-NUM_DAYS_AHEAD = 7
+DATE_WINDOW = 7
 PLAYER_COUNT = 2
 LATEST_HOUR = 17
 COURSES = [
-    GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
+    # GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
     # GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
     # GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
     # GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
-    # GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
+    GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
 ]
 
 
@@ -41,7 +41,7 @@ def init_args():
 def compute_target_dates() -> List[datetime.date]:
     weekends = []
     today = datetime.date.today()
-    last_date = today + datetime.timedelta(NUM_DAYS_AHEAD)
+    last_date = today + datetime.timedelta(DATE_WINDOW)
     candidate_date = today
     while candidate_date <= last_date:
         if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
@@ -66,14 +66,13 @@ def run_scrape(target_dates: List[datetime.date], debug_mode: bool, filter_times
 
 
 def aggregate_results(results_queue: Queue) -> (
-        Dict[str, List[Tuple[datetime.date, List[datetime.date]]]]):
+        Dict[datetime.date, List[Tuple[GolfCourse, List[datetime.date]]]]):
     aggregated_results = defaultdict(list)
     while not results_queue.empty():
         aggregated_results.update(results_queue.get())
     if args.debug:
         print(aggregated_results)
     return aggregated_results
-
 
 
 # To-dos:
@@ -89,6 +88,9 @@ if __name__ == '__main__':
     results_queue = run_scrape(
         target_dates=target_dates, debug_mode=args.debug, filter_times=args.filter_times)
     aggregated_results = aggregate_results(results_queue)
+
+    if args.debug:
+        print("Aggregated results:\n", aggregated_results)
 
     # Compare state and snapshot results. Determine whether to send notification.
     # snapshot_differ = SnapshotDiffer(aggregated_results)

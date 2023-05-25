@@ -163,7 +163,7 @@ class GolfNowScraper():
                 times.append(time)
 
         if self.debug_mode:
-                print(times)    
+            print(times)    
         return times
 
     def _pause(self, secs=1) -> None:
@@ -186,6 +186,9 @@ class ScrapeThread(threading.Thread):
     def run(self) -> None:
         print("Running {course} thread...".format(course=self.target_course.name))
         scraper = GolfNowScraper(debug_mode=self.debug_mode, filter_times=self.filter_times)
+
+        # key: date
+        # value: (course, [times])
         results = defaultdict(list)
         for date in self.target_dates:
             print("Thread {course} scraping {date}...".format(
@@ -193,7 +196,8 @@ class ScrapeThread(threading.Thread):
             times = scraper.scrape(target_course=self.target_course, target_date=date, 
                                    player_count=self.player_count, latest_hour=self.latest_hour)
             if times:
-                results[self.target_course.name].append((date, times))
+                results[date].append((self.target_course, times))
         self.results_queue.put(results)
+        
         scraper.close()
 
