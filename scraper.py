@@ -193,11 +193,16 @@ class GolfNowScraper():
         return cleaned_times
 
     def _snapshot_results(self, target_course: GolfCourse, target_date: datetime.date, results: List[str]) -> None:
-        file_name = 'snapshots/{course}_{target_date}.html'.format(
+        metadata = {
+            "course": course.tag
+            "target_date": target_date,
+            "timestamp": datetime.datetime.now(),
+            "tee_times": results
+        }
+        file_name = 'snapshots/{course}_{target_date}.json'.format(
             course=target_course.tag, target_date=target_date.strftime("%Y%m%d"))
         with open(file_name, 'w') as f:
-            f.write("Timestamp: {current_date} \n".format(current_date=str(datetime.datetime.now())))
-            f.write(results)
+            f.write(metadata)
             print("Snapshot written to", file_name)
 
 
@@ -219,16 +224,19 @@ class NotificationMessageWriter():
             print("Message written to", self.output_file)
 
     def _craft(self) -> str:
-        message = "*** Tee Times Alert! ***\n"
+        message = "***Tee Times Alert!***\n"
         print(self.results.items())
         for course_name, tee_times in self.results.items():
-            message += "\n{course}\n".format(course=course_name.replace(" Golf Course", ''))
+            message += "\n{course}\n".format(course=self._format_course_name(course))
             for date, times in tee_times:
                 message += "{date} {times}\n".format(
                     date=format_date(date), times=self._format_times(times))
 
         print(message)
         return message
+
+    def _format_course_name(self, course) -> str:
+        return course_name.upper().replace(" Golf Course", '')
 
     def _format_times(self, times: List[str]) -> str:
         return str(times).lower().replace(' ', '').replace('\'', '').replace('m', '')
