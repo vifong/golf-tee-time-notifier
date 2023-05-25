@@ -1,21 +1,17 @@
 ***Tee Times Alert!***
 
-RANCHO PARK GOLF COURSE
-Sat, May 27 [5:30p,5:40p,5:50p,6:00p,6:10p,6:20p,6:30p,6:40p,6:50p]
-Sun, May 28 [6:00p,6:10p,6:20p,6:30p,6:40p,6:50p]
+HANSEN DAM
+Sat, May 27 ['04:30PM','04:50PM']
+Sun, May 28 ['05:30AM','04:30PM']
 
-WOODLEY LAKES GOLF COURSE
-Sat, May 27 [3:10p,4:00p,4:10p,4:40p,4:50p,5:00p,5:10p,5:20p,5:30p,5:40p,5:50p,6:00p,6:10p,6:20p,6:30p,6:40p,6:50p]
-Sun, May 28 [4:40p,4:50p,5:10p,5:20p,5:30p,5:40p,5:50p,6:00p,6:10p,6:20p,6:30p,6:40p,6:50p]
+BALBOA
+Sat, May 27 ['06:10AM','04:10PM','04:50PM']
+Sun, May 28 ['04:40PM','04:50PM']
 
-ENCINO GOLF COURSE
-Sat, May 27 [4:35p,4:45p,4:55p,5:05p,5:15p,5:25p,5:35p,5:45p,5:55p,6:05p,6:15p,6:25p,6:35p,6:45p,6:55p]
-Sun, May 28 [4:05p,4:45p,4:55p,5:15p,5:25p,5:35p,5:45p,5:55p,6:05p,6:15p,6:25p,6:35p,6:45p,6:55p]
+WOODLEY LAKES
+Sat, May 27 ['03:10PM','04:00PM','04:10PM','04:40PM','04:50PM']
+Sun, May 28 ['04:40PM','04:50PM']
 
-BALBOA GOLF COURSE
-Sat, May 27 [4:10p,4:50p,5:00p,5:10p,5:20p,5:30p,5:40p,5:50p,6:00p,6:10p,6:20p,6:30p,6:40p,6:50p]
-Sun, May 28 [4:40p,4:50p,5:00p,5:10p,5:20p,5:30p,5:40p,5:50p,6:00p,6:10p,6:20p,6:30p,6:40p,6:50p]
-
-HANSEN DAM GOLF COURSE
-Sat, May 27 [4:30p,4:50p,5:00p,5:10p,5:20p,5:30p,5:40p,5:50p,6:00p,6:10p,6:20p,6:30p,6:40p,6:50p]
-Sun, May 28 [5:30a,4:30p,5:00p,5:10p,5:20p,5:30p,5:40p,5:50p,6:00p,6:10p,6:20p,6:30p,6:40p,6:50p]
+ENCINO
+Sat, May 27 ['04:35PM','04:45PM','04:55PM']
+Sun, May 28 ['04:05PM','04:45PM','04:55PM']

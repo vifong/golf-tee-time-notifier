@@ -28,6 +28,7 @@ class GolfCourse(NamedTuple):
 MESSAGE_OUTPUT_FILE = "message.txt"
 NUM_DAYS_AHEAD = 7
 PLAYER_COUNT = 2
+LATEST_HOUR = 17
 COURSES = [
     GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
     GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
@@ -67,7 +68,7 @@ class GolfNowScraper():
         # self._validate_results(target_course=target_course, target_date=target_date)
         # self._select_list_view()
         results = self._parse_results()
-        self._snapshot_results(target_course=target_course, target_date=target_date, results=str(results))
+        self._snapshot_results(target_course=target_course, target_date=target_date, results=results)
         return results
 
     def close(self):
@@ -175,30 +176,36 @@ class GolfNowScraper():
     def _check_diffs(self) -> bool:
         return True
 
-    def _parse_results(self) -> List[str]:
+    def _parse_results(self) -> List[datetime.date]:
         html_text = self.browser.page_source
         results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
         if not results:
             return []
 
-        cleaned_times = []
+        times = []
         for result in results:
             cleaned_str = result.strip()
             cleaned_str = re.sub('<script (.+?)</script>', '', cleaned_str)
             cleaned_str = re.sub('<sub>', '', cleaned_str)
             cleaned_str = re.sub('</sub>', '', cleaned_str)
-            cleaned_times.append(cleaned_str)
+            cleaned_str = re.sub('\'', '', cleaned_str)
+            time = datetime.datetime.strptime(cleaned_str, "%I:%M%p")
+
+            # TODO(vifong): Filter out times after 5pm
+            if time.hour < LATEST_HOUR:
+                times.append(time)
 
         if self.debug_mode:
-            print(cleaned_times)  
-        return cleaned_times
+            print(times)  
+        return times
 
-    def _snapshot_results(self, target_course: GolfCourse, target_date: datetime.date, results: List[str]) -> None:
+    def _snapshot_results(self, target_course: GolfCourse, target_date: datetime.date, results: List[datetime.date]) -> None:
+        print(results)
         metadata = {
             "course": course.tag,
             "target_date": str(target_date),
             "timestamp": str(datetime.datetime.now()),
-            "tee_times": results
+            "tee_times": [ t.strftime("%H:%M") for t in results]
         }
         file_name = 'snapshots/{course}_{target_date}.json'.format(
             course=target_course.tag, target_date=target_date.strftime("%Y%m%d"))
@@ -212,7 +219,7 @@ class GolfNowScraper():
 
 
 class NotificationMessageWriter():
-    def __init__(self, results: Dict[str, List[Tuple[datetime.date, List[str]]]], output_file: str) -> None:
+    def __init__(self, results: Dict[str, List[Tuple[datetime.date, List[datetime.date]]]], output_file: str) -> None:
         # key: course name
         # value: [(date, [times]), ...]
         self.results = results
@@ -238,8 +245,15 @@ class NotificationMessageWriter():
     def _format_course_name(self, course_name) -> str:
         return course_name.replace(" Golf Course", '').upper()
 
-    def _format_times(self, times: List[str]) -> str:
-        return str(times).lower().replace(' ', '').replace('\'', '').replace('m', '')
+    def _format_times(self, times: List[datetime.date]) -> str:
+        formatted_times = []
+        for t in times:
+            formatted_time = t.strftime("%I:%M%p")
+            if formatted_time[0] == '0':
+                formatted_time = formatted_time[0:]
+            formatted_times.append(formatted_time)
+
+        return str(formatted_times).replace(' ', '')
 
 
 class ScrapeThread(threading.Thread):
