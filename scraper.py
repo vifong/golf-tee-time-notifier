@@ -1,5 +1,4 @@
 from collections import defaultdict
-from concurrent import futures
 from queue import Queue
 from selenium import webdriver
 from selenium.webdriver.common.by import By
