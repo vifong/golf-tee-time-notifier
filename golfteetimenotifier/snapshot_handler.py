@@ -25,7 +25,7 @@ class SnapshotHandler():
     def has_new_data(self) -> bool:
         prev_snapshot_df = self._load_snapshot_df()
         # No prior data.
-        if not prev_snapshot_df:
+        if prev_snapshot_df.empty:
             print("No previous snapshot; writing data to file.")
             self.write_snapshot_df()
             return True
@@ -44,7 +44,7 @@ class SnapshotHandler():
                 if 'pickle' in file_name:
                     print("Loading {file_name} into DataFrame".format(file_name=file_name))
                     return pd.read_pickle(os.path.join(SNAPSHOTS_DIR, file_name))
-        return None
+        return pd.DataFrame()
 
     def write_snapshot_df(self) -> None:
         timestamp = dt.datetime.now()
