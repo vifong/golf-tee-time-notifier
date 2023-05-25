@@ -26,6 +26,7 @@ class GolfCourse(NamedTuple):
 
 
 MESSAGE_OUTPUT_FILE = "message.txt"
+NUM_DAYS_AHEAD = 7
 PLAYER_COUNT = 2
 COURSES = [
     GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
@@ -195,14 +196,14 @@ class GolfNowScraper():
     def _snapshot_results(self, target_course: GolfCourse, target_date: datetime.date, results: List[str]) -> None:
         metadata = {
             "course": course.tag,
-            "target_date": target_date,
-            "timestamp": datetime.datetime.now(),
+            "target_date": str(target_date),
+            "timestamp": str(datetime.datetime.now()),
             "tee_times": results
         }
         file_name = 'snapshots/{course}_{target_date}.json'.format(
             course=target_course.tag, target_date=target_date.strftime("%Y%m%d"))
         with open(file_name, 'w') as f:
-            f.write(json.dumps(metadata))
+            f.write(json.dumps(metadata, indent=2))
             print("Snapshot written to", file_name)
 
 
@@ -225,9 +226,8 @@ class NotificationMessageWriter():
 
     def _craft(self) -> str:
         message = "***Tee Times Alert!***\n"
-        print(self.results.items())
         for course_name, tee_times in self.results.items():
-            message += "\n{course}\n".format(course=self._format_course_name(course))
+            message += "\n{course}\n".format(course=self._format_course_name(course_name))
             for date, times in tee_times:
                 message += "{date} {times}\n".format(
                     date=format_date(date), times=self._format_times(times))
@@ -235,8 +235,8 @@ class NotificationMessageWriter():
         print(message)
         return message
 
-    def _format_course_name(self, course) -> str:
-        return course_name.upper().replace(" Golf Course", '')
+    def _format_course_name(self, course_name) -> str:
+        return course_name.replace(" Golf Course", '').upper()
 
     def _format_times(self, times: List[str]) -> str:
         return str(times).lower().replace(' ', '').replace('\'', '').replace('m', '')
@@ -269,7 +269,7 @@ class ScrapeThread(threading.Thread):
 def compute_target_dates() -> List[datetime.date]:
     weekends = []
     today = datetime.date.today()
-    last_date = today + datetime.timedelta(14)
+    last_date = today + datetime.timedelta(NUM_DAYS_AHEAD)
     candidate_date = today
     while candidate_date <= last_date:
         if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
@@ -309,7 +309,8 @@ if __name__ == '__main__':
     while not results_queue.empty():
         accumulated_results.update(results_queue.get())
 
-    print(accumulated_results)
+    if args.debug:
+        print(accumulated_results)
 
     message_writer = NotificationMessageWriter(results=accumulated_results, output_file=MESSAGE_OUTPUT_FILE)
     message_writer.write()
