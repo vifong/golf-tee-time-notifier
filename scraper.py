@@ -1,4 +1,6 @@
 from collections import defaultdict
+from concurrent import futures
+from queue import Queue
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -14,6 +16,7 @@ import calendar
 import datetime
 import re
 import time
+import threading
 
 
 class GolfCourse(NamedTuple):
@@ -27,9 +30,9 @@ PLAYER_COUNT = 2
 COURSES = [
     GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
     GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
-    # GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
-    # GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
-    # GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
+    GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
+    GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
+    GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
 ]
 
 # To-dos:
@@ -49,12 +52,11 @@ class GolfNowScraper():
     def __init__(self, debug_mode=False, filter_times=False) -> None:
         self.debug_mode = debug_mode
         self.filter_times = filter_times
-        chrome_options = Options()
+        self.chrome_options = Options()
         if not debug_mode:
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--headless")
-        self.browser = webdriver.Chrome(options=chrome_options)
+            self.chrome_options.add_argument("--no-sandbox")
+            self.chrome_options.add_argument("--disable-dev-shm-usage")
+            self.chrome_options.add_argument("--headless")
 
     def scrape(self, target_course: GolfCourse, target_date: datetime.date, player_count: int) -> List[str]:
         self._load_landing_page(target_course=target_course, player_count=player_count)
@@ -75,6 +77,7 @@ class GolfNowScraper():
                                        course_tag=target_course.tag,
                                        end_hour=self.END_HOUR_3PM if self.filter_times else self.END_HOUR_9PM,
                                        player_count=PLAYER_COUNT)       
+        self.browser = webdriver.Chrome(options=self.chrome_options)
         self.browser.get(url)
         self.browser.maximize_window()
         self._pause()
@@ -227,6 +230,31 @@ class NotificationMessageWriter():
         return message
 
 
+class ScrapeThread(threading.Thread):
+    def __init__(self, target_course: GolfCourse, target_dates: List[datetime.date], player_count: int,
+                       accumulated_results: Queue, #Dict[str, List[Tuple[str, List[str]]]],
+                       debug_mode=False, filter_times=False) -> None:
+        threading.Thread.__init__(self)
+        self.target_course = target_course
+        self.target_dates = target_dates
+        self.player_count = player_count
+        self.debug_mode = debug_mode
+        self.filter_times = filter_times
+        self.results_queue = results_queue
+
+    def run(self) -> None:
+        print("Running {course} thread...".format(course=self.target_course.name))
+        scraper = GolfNowScraper(debug_mode=args.debug, filter_times=args.filter_times)
+        results = defaultdict(list)
+        for date in target_dates:
+            print("Thread {course} scraping {date}...".format(course=self.target_course.tag, date=date))
+            times = scraper.scrape(target_course=self.target_course, target_date=date, player_count=self.player_count)
+            if times:
+                results[self.target_course.name].append((format_date(date), str(times)))
+        self.results_queue.put(results)
+        scraper.close()
+
+
 def compute_target_dates() -> List[datetime.date]:
     weekends = []
     today = datetime.date.today()
@@ -252,19 +280,28 @@ if __name__ == '__main__':
 
     target_dates = compute_target_dates()
     print("target_dates:", [format_date(d) for d in target_dates])
-    scraper = GolfNowScraper(debug_mode=args.debug, filter_times=args.filter_times)
 
-    all_results = defaultdict(list)
+    results_queue = Queue()
+    threads = []
     for course in COURSES:
-        for date in target_dates:
-            times = scraper.scrape(target_course=course, target_date=date, player_count=PLAYER_COUNT)
-            if times:
-                all_results[course.name].append((format_date(date), str(times)))
+        t = ScrapeThread(
+            target_course=course, target_dates=target_dates, player_count=PLAYER_COUNT, 
+            accumulated_results=results_queue, debug_mode=args.debug, filter_times=args.filter_times)
+        threads.append(t)
+        t.start()
 
-    message_writer = NotificationMessageWriter(results=all_results, output_file=MESSAGE_OUTPUT_FILE)
+    for t in threads:
+        t.join()
+
+    accumulated_results = defaultdict(list)
+    while not results_queue.empty():
+        accumulated_results.update(results_queue.get())
+
+    print(accumulated_results)
+
+    message_writer = NotificationMessageWriter(results=accumulated_results, output_file=MESSAGE_OUTPUT_FILE)
     message_writer.write()
 
     if args.debug:
         time.sleep(600)
 
-    # scraper.close()
