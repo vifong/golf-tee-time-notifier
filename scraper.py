@@ -38,7 +38,7 @@ COURSES = [
 # Multithreading browsers
 # State checking -> notifications
 # Filter timing
-
+# Delete old snapshots when date has passed
 
 class GolfNowScraper():
     URL_TEMPLATE = (
@@ -205,7 +205,7 @@ class GolfNowScraper():
 
 
 class NotificationMessageWriter():
-    def __init__(self, results: Dict[str, List[Tuple[str, List[str]]]], output_file: str) -> None:
+    def __init__(self, results: Dict[str, List[Tuple[datetime.date, List[str]]]], output_file: str) -> None:
         # key: course name
         # value: [(date, [times]), ...]
         self.results = results
@@ -221,18 +221,21 @@ class NotificationMessageWriter():
         message = "*** Tee Times Alert! ***\n"
         print(self.results.items())
         for course_name, tee_times in self.results.items():
-            message += "\n{course}:\n".format(course=course_name)
+            message += "\n{course}\n".format(course=course_name)
             for date, times in tee_times:
-                message += "{date} - {times}\n".format(date=date, times=times)
+                message += "{date} {times}\n".format(
+                    date=format_date(date), times=self._format_times(times))
 
         print(message)
         return message
 
+    def _format_times(self, times: List[str]) -> str:
+        return str(times).replace(' ', '').replace('\'', '')
+
 
 class ScrapeThread(threading.Thread):
     def __init__(self, target_course: GolfCourse, target_dates: List[datetime.date], player_count: int,
-                       accumulated_results: Queue, #Dict[str, List[Tuple[str, List[str]]]],
-                       debug_mode=False, filter_times=False) -> None:
+                       accumulated_results: Queue, debug_mode=False, filter_times=False) -> None:
         threading.Thread.__init__(self)
         self.target_course = target_course
         self.target_dates = target_dates
@@ -249,7 +252,7 @@ class ScrapeThread(threading.Thread):
             print("Thread {course} scraping {date}...".format(course=self.target_course.tag, date=date))
             times = scraper.scrape(target_course=self.target_course, target_date=date, player_count=self.player_count)
             if times:
-                results[self.target_course.name].append((format_date(date), str(times)))
+                results[self.target_course.name].append((date, times))
         self.results_queue.put(results)
         scraper.close()
 
@@ -268,6 +271,7 @@ def compute_target_dates() -> List[datetime.date]:
 
 def format_date(date: datetime.date) -> str:
     return date.strftime("%a, %b %d")   
+
 
 
 if __name__ == '__main__':
