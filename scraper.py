@@ -13,6 +13,7 @@ from typing import Tuple
 import argparse
 import calendar
 import datetime
+import json
 import re
 import time
 import threading
@@ -201,7 +202,7 @@ class GolfNowScraper():
         file_name = 'snapshots/{course}_{target_date}.json'.format(
             course=target_course.tag, target_date=target_date.strftime("%Y%m%d"))
         with open(file_name, 'w') as f:
-            f.write(metadata)
+            f.write(json.dumps(metadata))
             print("Snapshot written to", file_name)
 
 
