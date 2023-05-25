@@ -1,8 +1,5 @@
 from collections import defaultdict
 from message_writer import NotificationMessageWriter
-# from snapshot_handler import delete_stale_snapshots
-# from snapshot_handler import snapshot_results
-# from snapshot_handler import SnapshotDiffer
 from snapshot_handler import SnapshotHandler
 from typing import Dict
 from typing import List
@@ -25,7 +22,7 @@ LATEST_HOUR = 17
 COURSES = [
     # GolfCourse('12203', 'rancho-park-golf-course', 'Rancho Park Golf Course'),
     # GolfCourse('12205', 'woodley-lakes-golf-course', 'Woodley Lakes Golf Course'),
-    # GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
+    GolfCourse('12197', 'balboa-golf-course', 'Balboa Golf Course'),
     # GolfCourse('12200', 'encino-golf-course', 'Encino Golf Course'),
     GolfCourse('12201', 'hansen-dam-golf-course', 'Hansen Dam Golf Course'),
 ]
@@ -70,9 +67,10 @@ def aggregate_results(results_queue: Queue) -> (
         Dict[datetime.date, List[Tuple[GolfCourse, List[datetime.date]]]]):
     aggregated_results = defaultdict(list)
     while not results_queue.empty():
-        aggregated_results.update(results_queue.get())
+        course, date, times = results_queue.get()
+        aggregated_results[date].append((course, times))
     if args.debug:
-        print(aggregated_results)
+        print("\naggregated_results:\n", aggregated_results)
     return aggregated_results
 
 
@@ -80,9 +78,12 @@ def aggregate_results(results_queue: Queue) -> (
 # State checking -> notifications
 # Add a way to ignore a date
 if __name__ == '__main__':
-    # Setup environment.
+    # Setup flags.
     args = init_args()
-    delete_stale_snapshots()
+
+    # Delete stale snapshots.
+    snapshot_handler = SnapshotHandler()    
+    snapshot_handler.delete_stale_snapshots()    
 
     # Prepare and run scrape and collect results.
     target_dates = compute_target_dates()
@@ -90,12 +91,9 @@ if __name__ == '__main__':
         target_dates=target_dates, debug_mode=args.debug, filter_times=args.filter_times)
     aggregated_results = aggregate_results(results_queue)
 
-    if args.debug:
-        print("Aggregated results:\n", aggregated_results)
+    # Compare and capture snapshots.
+    snapshot_handler.snapshot_results(aggregated_results)    
 
-    # Compare state and snapshot results. Determine whether to send notification.
-    # snapshot_differ = SnapshotDiffer(aggregated_results)
-    # snapshot_differ.has_new_times()
 
     # Write notification message.
     # message_writer = NotificationMessageWriter(results=accumulated_results, output_file=MESSAGE_OUTPUT_FILE)
