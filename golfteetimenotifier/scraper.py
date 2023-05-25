@@ -184,7 +184,7 @@ class ScrapeThread(threading.Thread):
         self.results_queue = results_queue
 
     def run(self) -> None:
-        print("Running {course} thread...".format(course=self.target_course.name))
+        print("Running {course} thread...".format(course=self.target_course.tag))
         scraper = GolfNowScraper(debug_mode=self.debug_mode, filter_times=self.filter_times)
 
         for date in self.target_dates:

@@ -9,37 +9,46 @@ import json
 import os
 
 
-SNAPSHOTS_DIRECTORY = "output/snapshots"
+SNAPSHOTS_DIR = "output/snapshots"
+TMP_SUBDIR = os.path.join(SNAPSHOTS_DIR, "tmp")
 
 
 class SnapshotHandler():
-    def __init__(self) -> None:
-        pass
+    def __init__(self, aggregated_results: (
+            Dict[datetime.date, List[Tuple[GolfCourse, List[datetime.date]]]])) -> None:
+        self.aggregated_results = aggregated_results
 
-    def delete_stale_snapshots(self) -> None:
+    def clean_stale_snapshots(self) -> None:
+        if os.path.exists(TMP_SUBDIR):
+            rmtree(TMP_SUBDIR)
+
         today = datetime.date.today()
-        for _, subdirs, _ in os.walk(SNAPSHOTS_DIRECTORY):
-            for subdir in subdirs:
-                dir_path = os.path.join(SNAPSHOTS_DIRECTORY, subdir)
-                snapshot_date = datetime.datetime.strptime(subdir, "%Y%m%d")
+        for _, _, json_files in os.walk(SNAPSHOTS_DIR):
+            for f in json_files:
+                file_path = os.path.join(SNAPSHOTS_DIR, f)
+                snapshot_date = datetime.datetime.strptime(f.replace('.json', ''), "%Y%m%d")
                 # Delete directories of dates that already passed
                 if snapshot_date.date() < today:
-                    print("Deleting", dir_path)
-                    rmtree(dir_path)
+                    print("Deleting", file_path)
+                    rmtree(file_path)
 
-    def compare_snapshots(self) -> None:
+    def diff_snapshots(self) -> None:
         pass
 
-    def snapshot_results(self, aggregated_results: (
-            Dict[datetime.date, List[Tuple[GolfCourse, List[datetime.date]]]])) -> None:
-        for date, results in aggregated_results.items():
+    def snapshot_results(self, is_tmp=True) -> None:
+        for date, results in self.aggregated_results.items():
             json_data = self._convert_to_json_data(results)
-            self._write_json_to_file(target_date=date, json_data=json_data)
+            dir_path = TMP_SUBDIR if is_tmp else SNAPSHOTS_DIR 
+            self._write_json_to_file(dir_path=dir_path, target_date=date, json_data=json_data)
 
-    def _write_json_to_file(self, target_date: datetime.date, 
+    def _write_json_to_file(self, dir_path: str,
+                                  target_date: datetime.date, 
                                   json_data: Dict[str, List[str]]) -> None:
-        snapshot_path = os.path.join(
-            SNAPSHOTS_DIRECTORY, "{date}.json".format(date=target_date.strftime("%Y%m%d")))
+        if not os.path.exists(dir_path):
+            print("Initializing", dir_path)
+            os.mkdir(dir_path)
+
+        snapshot_path = self._build_snapshot_path(dir_path=dir_path, target_date=target_date)
         with open(snapshot_path, 'w') as f:
             f.write(json.dumps(json_data, indent=2))
             print("Snapshot written to", snapshot_path)
@@ -51,25 +60,9 @@ class SnapshotHandler():
             json_data[course.tag] = [ t.strftime("%H:%M") for t in tee_times ]
         return json_data
 
+    def _build_snapshot_path(self, dir_path: str, target_date: datetime.date):
+        return os.path.join(dir_path, "{date}.json".format(date=target_date.strftime("%Y%m%d")))
 
-
-# def snapshot_results(target_course: GolfCourse, target_date: datetime.date, 
-#                      results: List[datetime.date]) -> None:
-#     metadata = {
-#         "course": course.tag,
-#         "target_date": str(target_date),
-#         "timestamp": str(datetime.datetime.now()),
-#         "tee_times": [ t.strftime("%H:%M") for t in results ]
-#     }
-#     subdir = "{root}/{target_date}".format(
-#         root=SNAPSHOTS_DIRECTORY, target_date=target_date.strftime("%Y%m%d"))
-#     if not os.path.exists(subdir):
-#         print("Creating directory", subdir)
-#         os.makedirs(subdir)
-#     file_path = os.path.join(subdir, "{course}.json".format(course=target_course.tag))
-#     with open(file_path, 'w') as f:
-#         f.write(json.dumps(metadata, indent=2))
-#         print("Snapshot written to", file_path)
 
 
 class SnapshotDiffer():

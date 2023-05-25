@@ -81,9 +81,7 @@ if __name__ == '__main__':
     # Setup flags.
     args = init_args()
 
-    # Delete stale snapshots.
-    snapshot_handler = SnapshotHandler()    
-    snapshot_handler.delete_stale_snapshots()    
+
 
     # Prepare and run scrape and collect results.
     target_dates = compute_target_dates()
@@ -91,8 +89,9 @@ if __name__ == '__main__':
         target_dates=target_dates, debug_mode=args.debug, filter_times=args.filter_times)
     aggregated_results = aggregate_results(results_queue)
 
-    # Compare and capture snapshots.
-    snapshot_handler.snapshot_results(aggregated_results)    
+    snapshot_handler = SnapshotHandler(aggregated_results)    
+    snapshot_handler.clean_stale_snapshots()    
+    snapshot_handler.snapshot_results()    
 
 
     # Write notification message.
