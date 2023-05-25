@@ -90,13 +90,11 @@ if __name__ == '__main__':
 
     # Compare snapshots to determine whether to send a notification.
     snapshot_handler = SnapshotHandler(data_df=aggregated_df)    
-    snapshot_handler.write_snapshot_df()
-    # snapshot_handler.snapshot_results()   
-    # snapshot_handler.diff_snapshots() 
-
-    # Write notification message.
-    # message_writer = NotificationMessageWriter(results=accumulated_results, output_file=MESSAGE_OUTPUT_FILE)
-    # message_writer.write()
+    if snapshot_handler.has_new_data():
+        # Write notification message.
+        message_writer = NotificationMessageWriter(
+            results=accumulated_results, output_file=MESSAGE_OUTPUT_FILE)
+        message_writer.write()
 
     if args.debug:
         time.sleep(600)

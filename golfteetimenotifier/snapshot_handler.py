@@ -22,9 +22,21 @@ class SnapshotHandler():
         self.data_df = data_df
     #     self.clean_stale_snapshots()
 
-    def compare_snapshot(self) -> None:
-        snapshot_df = self._load_snapshot_df()
-        pass
+    def has_new_data(self) -> bool:
+        prev_snapshot_df = self._load_snapshot_df()
+        # No prior data.
+        if not prev_snapshot_df:
+            print("No previous snapshot; writing data to file.")
+            self.write_snapshot_df()
+            return True
+
+        # No changes.
+        if prev_snapshot_df.equals(self.data_df):
+            print("No changes in data from snapshot.")
+            return False
+
+        print("Changes in snapshots.")
+        return True
 
     def _load_snapshot_df(self) -> pd.DataFrame:
         for _, _, files in os.walk(SNAPSHOTS_DIR):
