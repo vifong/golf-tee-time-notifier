@@ -8,7 +8,6 @@ from typing import Tuple
 import datetime as dt
 import filecmp
 import json
-import numpy as np
 import os
 import pandas as pd
 import pickle

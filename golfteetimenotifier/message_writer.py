@@ -5,6 +5,7 @@ from typing import Tuple
 import datetime as dt
 import pandas as pd
 
+
 MESSAGE_OUTPUT_FILE = "output/message.txt"
 
 

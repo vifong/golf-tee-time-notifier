@@ -74,8 +74,8 @@ def aggregate_results(results_queue: Queue) -> pd.DataFrame:
 
 
 # To-dos:
-# State checking -> notifications
-# Add a way to ignore a date
+# Revisit Github Actions workflow.
+# Make sure storage files persist between run.
 if __name__ == '__main__':
     # Setup flags.
     args = init_args()

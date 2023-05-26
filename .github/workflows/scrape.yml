@@ -22,34 +22,37 @@ jobs:
       - name: Install requirements
         run: pip install -r requirements.txt
       - name: Run Scraper
-        run: python scraper.py
+        run: python golfteetimenotifier/main.py
       - name: Print time
         run: |
           echo "$(python -c 'import datetime as dt; print(dt.datetime.now())')"
-      - name: Set env vars
-        run: |
-          echo "DATE=$(python -c 'import datetime as dt; print(dt.datetime.now().date())')" >> $GITHUB_ENV
+      # - name: Set env vars
+      #   run: |
+      #     echo "DATE=$(python -c 'import datetime as dt; print(dt.datetime.now().date())')" >> $GITHUB_ENV
+
+      - name: Upload message.txt
+        uses: actions/upload-artifact@v2
+        with:
+          name: message
+          path: output/message.txt 
       - name: Set message vars
         id: vars
         run: |
-          MSG_STRING=$(cat message.txt)
+          MSG_STRING=$(cat output/message.txt)
           echo "MSG_STRING<<EOF" >> $GITHUB_ENV
           echo "$MSG_STRING" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-        # run: echo "message=$(cat message.txt)" >> $GITHUB_OUTPUT
-      # - name: Test message output
-      #   # run: echo ${{ steps.vars.outputs.message }}
-      #   run: |
-      #     echo ${{ env.MSG_STRING }}
-      - name: 'Sending SMS Notification'
-        uses: twilio-labs/actions-sms@v1
-        with:
-          fromPhoneNumber: '+1(844)9684068'
-          toPhoneNumber: ${{ secrets.PHONE_NUMBER }}
-          message: |
-            ${{ env.MSG_STRING }}
-          # message: ${{ steps.vars.outputs.message }}
-        env:
-          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
-          TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
-          TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
+      - name: Test message output
+        run: |
+          echo ${{ env.MSG_STRING }}
+      # - name: 'Sending SMS Notification'
+      #   uses: twilio-labs/actions-sms@v1
+      #   with:
+      #     fromPhoneNumber: '+1(844)9684068'
+      #     toPhoneNumber: ${{ secrets.PHONE_NUMBER }}
+      #     message: |
+      #       ${{ env.MSG_STRING }}
+      #   env:
+      #     TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+      #     TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
+      #     TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
