@@ -38,7 +38,7 @@ jobs:
       - name: Set message vars
         id: vars
         run: |
-          MSG_STRING=$(cat output/message.txt)
+          MSG_STRING=$(cat golfteetimenotifier/output/message.txt)
           echo "MSG_STRING<<EOF" >> $GITHUB_ENV
           echo "$MSG_STRING" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
