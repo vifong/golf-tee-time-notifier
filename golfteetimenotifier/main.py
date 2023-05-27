@@ -23,7 +23,7 @@ LATEST_HOUR = 17
 COURSES = [
     # GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203', ),
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205' ),
-    GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
+    # GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
     # GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
     GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
 ]

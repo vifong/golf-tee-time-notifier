@@ -13,7 +13,9 @@ import pandas as pd
 import pickle
 
 
-SNAPSHOTS_DIR = "output/snapshots"
+PROJECT_DIR = "golfteetimenotifier/"
+SNAPSHOTS_DIR = os.path.abspath(
+    "{0}output/snapshots".format(PROJECT_DIR if PROJECT_DIR not in os.getcwd() else ""))
 TMP_SUBDIR = os.path.join(SNAPSHOTS_DIR, "tmp")
 
 
@@ -32,7 +34,7 @@ class SnapshotHandler():
             return True
 
         # No changes.
-        if self.prev_snapshot_df.equals(self.data_df):
+        if self.prev_snapshot_df.equals(self.curr_snapshot_df):
             print("No changes in data from snapshot.")
             return False
 
@@ -45,11 +47,12 @@ class SnapshotHandler():
         return has_new_tee_times
 
     def _load_snapshot_df(self) -> pd.DataFrame:
-        for _, _, files in os.walk(SNAPSHOTS_DIR):
-            for file_name in files:
-                if 'pickle' in file_name:
-                    print("Loading {file_name} into DataFrame".format(file_name=file_name))
-                    return pd.read_pickle(os.path.join(SNAPSHOTS_DIR, file_name))
+        if os.path.exists(SNAPSHOTS_DIR):
+            for _, _, files in os.walk(SNAPSHOTS_DIR):
+                for file_name in files:
+                    if 'pickle' in file_name:
+                        print("Loading {file_name} into DataFrame".format(file_name=file_name))
+                        return pd.read_pickle(os.path.join(SNAPSHOTS_DIR, file_name))
         return pd.DataFrame()
 
     def _has_new_tee_times(self) -> bool:
@@ -65,13 +68,17 @@ class SnapshotHandler():
         return 'right_only' in set(merged_df['Exists'])
 
     def _write_snapshot_df(self) -> None:
+        if not os.path.exists(SNAPSHOTS_DIR):
+            print("Initializing", SNAPSHOTS_DIR)
+            os.makedirs(SNAPSHOTS_DIR)
+
         timestamp = dt.datetime.now()
         pickle_path = os.path.join(SNAPSHOTS_DIR, '{timestamp}.pickle'.format(timestamp=timestamp))
         csv_path = os.path.join(SNAPSHOTS_DIR, '{timestamp}.csv'.format(timestamp=timestamp))
-        with open(pickle_path, 'wb') as f:
-            pickle.dump(self.data_df, f)
+        with open(pickle_path, 'wb+') as f:
+            pickle.dump(self.curr_snapshot_df, f)
             print("Pickled data into {path}...".format(path=pickle_path))
-        self.data_df.to_csv(csv_path)
+        self.curr_snapshot_df.to_csv(csv_path)
         print("Dumped data into {path}...".format(path=csv_path))
 
     def _clear_snapshots_dir(self) -> None:

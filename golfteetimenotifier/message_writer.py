@@ -3,10 +3,13 @@ from typing import List
 from typing import NamedTuple
 from typing import Tuple
 import datetime as dt
+import os
 import pandas as pd
 
 
-MESSAGE_OUTPUT_FILE = "output/message.txt"
+PROJECT_DIR = "golfteetimenotifier/"
+MESSAGE_OUTPUT_FILE = os.path.abspath(
+    "{0}output/message.txt".format(PROJECT_DIR if PROJECT_DIR not in os.getcwd() else ""))
 
 
 class NotificationMessageWriter():
