@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: message
-          path: output/message.txt 
+          path: golfteetimenotifier/output/message.txt 
       - name: Set message vars
         id: vars
         run: |
