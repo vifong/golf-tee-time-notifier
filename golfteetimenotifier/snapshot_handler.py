@@ -23,13 +23,12 @@ SNAPSHOT_CSV = os.path.join(SNAPSHOTS_DIR, "snapshot.csv")
 class SnapshotHandler():
     def __init__(self, data_df: pd.DataFrame) -> None:
         self.curr_snapshot_df = data_df
-        self.prev_snapshot_df = self._load_snapshot_df()
         self.curr_snapshot_df.reset_index(drop=True, inplace=True)  
-        self.prev_snapshot_df.reset_index(drop=True, inplace=True) 
+        self.prev_snapshot_df = self._load_snapshot_df()
 
     def has_new_tee_times(self) -> bool:
         # No prior data.
-        if self.prev_snapshot_df.empty:
+        if self.prev_snapshot_df == None:
             print("No previous snapshot; writing data to file.")
             self._write_snapshot_df()
             return True
@@ -50,8 +49,11 @@ class SnapshotHandler():
     def _load_snapshot_df(self) -> pd.DataFrame:
         if os.path.exists(SNAPSHOT_PICKLE):
             print("Loading {file_name} into DataFrame".format(file_name=SNAPSHOT_PICKLE))
-            return pd.read_pickle(SNAPSHOT_PICKLE)
-        return pd.DataFrame()
+            df = pd.read_pickle(SNAPSHOT_PICKLE)
+            df.reset_index(drop=True, inplace=True) 
+            return df
+        print(SNAPSHOT_PICKLE, "does not exist.")
+        return None
 
     def _has_new_tee_times(self) -> bool:
         print("\nprev_snapshot_df:\n", self.prev_snapshot_df)
@@ -72,9 +74,9 @@ class SnapshotHandler():
 
         with open(SNAPSHOT_PICKLE, 'wb+') as f:
             pickle.dump(self.curr_snapshot_df, f)
-            print("Pickled data into {path}...".format(path=pickle_path))
+            print("Pickled data into {path}...".format(path=SNAPSHOT_PICKLE))
         self.curr_snapshot_df.to_csv(SNAPSHOT_CSV)
-        print("Dumped data into {path}...".format(path=csv_path))
+        print("Dumped data into {path}...".format(path=SNAPSHOT_CSV))
 
     def _clear_snapshots_dir(self) -> None:
         print("Deleting", SNAPSHOTS_DIR)
