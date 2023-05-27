@@ -16,7 +16,8 @@ import pickle
 PROJECT_DIR = "golfteetimenotifier/"
 SNAPSHOTS_DIR = os.path.abspath(
     "{0}output/snapshots".format(PROJECT_DIR if PROJECT_DIR not in os.getcwd() else ""))
-TMP_SUBDIR = os.path.join(SNAPSHOTS_DIR, "tmp")
+SNAPSHOT_PICKLE = os.path.join(SNAPSHOTS_DIR, "snapshot.pickle")
+SNAPSHOT_CSV = os.path.join(SNAPSHOTS_DIR, "snapshot.csv")
 
 
 class SnapshotHandler():
@@ -47,12 +48,9 @@ class SnapshotHandler():
         return has_new_tee_times
 
     def _load_snapshot_df(self) -> pd.DataFrame:
-        if os.path.exists(SNAPSHOTS_DIR):
-            for _, _, files in os.walk(SNAPSHOTS_DIR):
-                for file_name in files:
-                    if 'pickle' in file_name:
-                        print("Loading {file_name} into DataFrame".format(file_name=file_name))
-                        return pd.read_pickle(os.path.join(SNAPSHOTS_DIR, file_name))
+        if os.path.exists(SNAPSHOT_PICKLE):
+            print("Loading {file_name} into DataFrame".format(file_name=SNAPSHOT_PICKLE))
+            return pd.read_pickle(SNAPSHOT_PICKLE)
         return pd.DataFrame()
 
     def _has_new_tee_times(self) -> bool:
@@ -72,13 +70,10 @@ class SnapshotHandler():
             print("Initializing", SNAPSHOTS_DIR)
             os.makedirs(SNAPSHOTS_DIR)
 
-        timestamp = dt.datetime.now()
-        pickle_path = os.path.join(SNAPSHOTS_DIR, '{timestamp}.pickle'.format(timestamp=timestamp))
-        csv_path = os.path.join(SNAPSHOTS_DIR, '{timestamp}.csv'.format(timestamp=timestamp))
-        with open(pickle_path, 'wb+') as f:
+        with open(SNAPSHOT_PICKLE, 'wb+') as f:
             pickle.dump(self.curr_snapshot_df, f)
             print("Pickled data into {path}...".format(path=pickle_path))
-        self.curr_snapshot_df.to_csv(csv_path)
+        self.curr_snapshot_df.to_csv(SNAPSHOT_CSV)
         print("Dumped data into {path}...".format(path=csv_path))
 
     def _clear_snapshots_dir(self) -> None:
