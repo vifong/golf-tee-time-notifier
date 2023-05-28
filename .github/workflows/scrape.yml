@@ -51,8 +51,8 @@ jobs:
           name: message
           path: golfteetimenotifier/output/message.txt 
       - name: Set message vars
-        if: steps.check_files.outputs.files_exists == 'true'
         id: vars
+        if: steps.check_files.outputs.files_exists == 'true'
         run: |
           MSG_STRING=$(cat golfteetimenotifier/output/message.txt)
           echo "MSG_STRING<<EOF" >> $GITHUB_ENV
