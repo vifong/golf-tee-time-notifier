@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: snapshot
-          path: golfteetimenotifier/output/snapshots/snapshot.pickle 
+          path: snapshot/snapshot.pickle 
       - name: Upload message.txt
         uses: actions/upload-artifact@v2
         with:
