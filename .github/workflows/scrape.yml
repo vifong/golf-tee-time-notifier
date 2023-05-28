@@ -22,7 +22,7 @@ jobs:
       - name: Install requirements
         run: pip install -r requirements.txt
       - name: Download snapshot.pickle
-        users: actions/download-artifact@v2
+        uses: actions/download-artifact@v2
         with:
           name: snapshot
       - name: Run Scraper
@@ -38,7 +38,6 @@ jobs:
         with:
           name: snapshot
           path: snapshot/snapshot.pickle 
-
       - name: Check message.txt exists
         id: check_message
         uses: andstor/file-existence-action@v1
