@@ -16,24 +16,22 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
       - name: Set up Python
-        uses: actions/setup-python@v2.0.0
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.7'
+          python-version: '3.9'
+          cache: 'pip'
       - name: Install requirements
         run: pip install -r requirements.txt
       - name: Download snapshot.pickle
         uses: actions/download-artifact@v2
         with:
           name: snapshot
-      - name: Run Scraper
+      - name: Run script
         if: always()
         run: python golfteetimenotifier/main.py
-      - name: Print time
-        run: |
-          echo "$(python -c 'import datetime as dt; print(dt.datetime.now())')"
-      # - name: Set env vars
+      # - name: Print time
       #   run: |
-      #     echo "DATE=$(python -c 'import datetime as dt; print(dt.datetime.now().date())')" >> $GITHUB_ENV
+      #     echo "$(python -c 'import datetime as dt; print(dt.datetime.now())')"
       - name: Upload snapshot.pickle
         if: always()
         uses: actions/upload-artifact@v2
