@@ -21,11 +21,18 @@ jobs:
           python-version: '3.7'
       - name: Install requirements
         run: pip install -r requirements.txt
+
+      # - name: Check snapshot.pickle exists
+      #   id: check_message
+      #   uses: andstor/file-existence-action@v1
+      #   with:
+      #     files: "snapshot/snapshot.pickle"
       - name: Download snapshot.pickle
         uses: actions/download-artifact@v2
         with:
           name: snapshot
       - name: Run Scraper
+        if: always()
         run: python golfteetimenotifier/main.py
       - name: Print time
         run: |
