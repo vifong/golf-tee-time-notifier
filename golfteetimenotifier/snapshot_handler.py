@@ -13,9 +13,8 @@ import pandas as pd
 import pickle
 
 
-SNAPSHOT_DIR = "snapshot"
-SNAPSHOT_PICKLE = os.path.join(SNAPSHOT_DIR, "snapshot.pickle")
-SNAPSHOT_CSV = os.path.join(SNAPSHOT_DIR, "snapshot.csv")
+SNAPSHOT_PICKLE = "snapshot.pickle")
+SNAPSHOT_CSV = "snapshot.csv")
 
 
 class SnapshotHandler():
@@ -33,10 +32,6 @@ class SnapshotHandler():
         return pd.DataFrame()
 
     def write_snapshot_df(self) -> None:
-        if not os.path.exists(SNAPSHOT_DIR):
-            print("Initializing", SNAPSHOT_DIR)
-            os.makedirs(SNAPSHOT_DIR)
-
         with open(SNAPSHOT_PICKLE, 'wb+') as f:
             pickle.dump(self.curr_snapshot_df, f)
             print("Pickled data into {path}...".format(path=SNAPSHOT_PICKLE))
