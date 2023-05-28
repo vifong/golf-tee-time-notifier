@@ -19,7 +19,7 @@ import time
 
 DATE_WINDOW = 7
 PLAYER_COUNT = 2
-LATEST_HOUR = 17    # Before 5pm
+LATEST_HOUR = 16    # Before 4pm
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203', ),
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205' ),
