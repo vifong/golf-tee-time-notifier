@@ -26,10 +26,14 @@ jobs:
       - name: Print time
         run: |
           echo "$(python -c 'import datetime as dt; print(dt.datetime.now())')"
-      # - name: Set env vars
-      #   run: |
-      #     echo "DATE=$(python -c 'import datetime as dt; print(dt.datetime.now().date())')" >> $GITHUB_ENV
-
+      - name: Set env vars
+        run: |
+          echo "DATE=$(python -c 'import datetime as dt; print(dt.datetime.now().date())')" >> $GITHUB_ENV
+      - name: Upload snapshot.pickle
+        uses: actions/upload-artifact@v2
+        with:
+          name: snapshot
+          path: golfteetimenotifier/output/snapshots/snapshot.pickle 
       - name: Upload message.txt
         uses: actions/upload-artifact@v2
         with:
