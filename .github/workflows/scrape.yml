@@ -46,26 +46,21 @@ jobs:
         with:
           files: "message.txt"
       - name: Upload message.txt
-        if: steps.check_files.outputs.files_exists == 'true'
+        if: steps.check_message.outputs.files_exists == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: message
           path: golfteetimenotifier/output/message.txt 
       - name: Set message vars
         id: vars
-        if: steps.check_files.outputs.files_exists == 'true'
+        if: steps.check_message.outputs.files_exists == 'true'
         run: |
           MSG_STRING=$(cat golfteetimenotifier/output/message.txt)
           echo "MSG_STRING<<EOF" >> $GITHUB_ENV
           echo "$MSG_STRING" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-      
-      # - name: Test message output
-      #   run: |
-      #     echo ${{ env.MSG_STRING }}
-
       # - name: 'Sending SMS Notification'
-        # if: steps.check_files.outputs.files_exists == 'true'
+      #   if: steps.check_message.outputs.files_exists == 'true'
       #   uses: twilio-labs/actions-sms@v1
       #   with:
       #     fromPhoneNumber: '+1(844)9684068'
