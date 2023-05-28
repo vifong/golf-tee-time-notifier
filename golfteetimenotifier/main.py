@@ -19,7 +19,7 @@ import time
 
 DATE_WINDOW = 7
 PLAYER_COUNT = 2
-LATEST_HOUR = 16    # Before 4pm
+LATEST_HOUR = 16    # Before 4pm - TODO(vifong): 3pm cutoff, incl.
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203', ),
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205' ),
@@ -86,7 +86,6 @@ if __name__ == '__main__':
     results_queue = run_scrape(
         target_dates=target_dates, debug_mode=args.debug, all_times=args.all_times)
     aggregated_df = aggregate_results(results_queue)
-
     print(aggregated_df)
 
     # Compare snapshots to determine whether to send a notification.
