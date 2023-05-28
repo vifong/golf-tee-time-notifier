@@ -20,6 +20,16 @@ class NotificationMessageWriter():
         with open(MESSAGE_OUTPUT_FILE, 'w') as f:
             f.write(message)
             print("Message written to", MESSAGE_OUTPUT_FILE)
+            f.close()
+
+    def delete(self) -> None:
+        if not os.path.exists(MESSAGE_OUTPUT_FILE):
+            print(MESSAGE_OUTPUT_FILE, "does not exist.")
+        try:
+            os.remove(MESSAGE_OUTPUT_FILE)
+            print("Deleted ", MESSAGE_OUTPUT_FILE)
+        except:
+            print("Failed to delete", MESSAGE_OUTPUT_FILE) 
 
     def _craft(self) -> str:
         message = "***Tee Times Alert!***\n"

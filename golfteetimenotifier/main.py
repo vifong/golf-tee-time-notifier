@@ -77,9 +77,6 @@ def aggregate_results(results_queue: Queue) -> pd.DataFrame:
     return aggregated_df
 
 
-# To-dos:
-# Revisit Github Actions workflow.
-# Make sure storage files persist between run.
 if __name__ == '__main__':
     # Setup flags.
     args = init_args()
@@ -95,10 +92,12 @@ if __name__ == '__main__':
     # Compare snapshots to determine whether to send a notification.
     snapshot_handler = SnapshotHandler(data_df=aggregated_df)    
     snapshot_handler.has_new_tee_times()
+
+    message_writer = NotificationMessageWriter(data_df=aggregated_df)
     if snapshot_handler.has_new_tee_times():
-        # Write notification message.
-        message_writer = NotificationMessageWriter(data_df=aggregated_df)
         message_writer.write()
+    else:
+        message_writer.delete()
 
     if args.debug:
         time.sleep(600)

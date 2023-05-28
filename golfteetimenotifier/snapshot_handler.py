@@ -40,8 +40,6 @@ class SnapshotHandler():
         # There are diffs in the snapshots.
         has_new_tee_times = self._has_new_tee_times()        
         print("Diffs in snapshots -> new tee times? ", has_new_tee_times)
-
-        # self._clear_snapshot_dir()
         self._write_snapshot_df()
         return has_new_tee_times
 
@@ -74,7 +72,3 @@ class SnapshotHandler():
             print("Pickled data into {path}...".format(path=SNAPSHOT_PICKLE))
         self.curr_snapshot_df.to_csv(SNAPSHOT_CSV)
         print("Dumped data into {path}...".format(path=SNAPSHOT_CSV))
-
-    def _clear_snapshot_dir(self) -> None:
-        print("Deleting", SNAPSHOT_DIR)
-        rmtree(SNAPSHOT_DIR)
