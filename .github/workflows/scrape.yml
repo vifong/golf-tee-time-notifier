@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: snapshot
-          path: snapshot/snapshot.pickle 
+          path: snapshot.pickle 
       - name: Check message.txt exists
         id: check_message
         uses: andstor/file-existence-action@v1
