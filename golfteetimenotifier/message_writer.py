@@ -7,9 +7,7 @@ import os
 import pandas as pd
 
 
-PROJECT_DIR = "golfteetimenotifier/"
-MESSAGE_OUTPUT_FILE = os.path.abspath(
-    "{0}output/message.txt".format(PROJECT_DIR if PROJECT_DIR not in os.getcwd() else ""))
+MESSAGE_OUTPUT_FILE = "message.txt"
 
 
 class NotificationMessageWriter():

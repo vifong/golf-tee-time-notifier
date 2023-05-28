@@ -13,11 +13,9 @@ import pandas as pd
 import pickle
 
 
-PROJECT_DIR = "golfteetimenotifier/"
-SNAPSHOTS_DIR = os.path.abspath(
-    "{0}output/snapshots".format(PROJECT_DIR if PROJECT_DIR not in os.getcwd() else ""))
-SNAPSHOT_PICKLE = os.path.join(SNAPSHOTS_DIR, "snapshot.pickle")
-SNAPSHOT_CSV = os.path.join(SNAPSHOTS_DIR, "snapshot.csv")
+SNAPSHOT_DIR = "snapshot"
+SNAPSHOT_PICKLE = os.path.join(SNAPSHOT_DIR, "snapshot.pickle")
+SNAPSHOT_CSV = os.path.join(SNAPSHOT_DIR, "snapshot.csv")
 
 
 class SnapshotHandler():
@@ -25,10 +23,11 @@ class SnapshotHandler():
         self.curr_snapshot_df = data_df
         self.curr_snapshot_df.reset_index(drop=True, inplace=True)  
         self.prev_snapshot_df = self._load_snapshot_df()
+        self.prev_snapshot_df.reset_index(drop=True, inplace=True) 
 
     def has_new_tee_times(self) -> bool:
         # No prior data.
-        if self.prev_snapshot_df == None:
+        if self.prev_snapshot_df.empty:
             print("No previous snapshot; writing data to file.")
             self._write_snapshot_df()
             return True
@@ -42,18 +41,16 @@ class SnapshotHandler():
         has_new_tee_times = self._has_new_tee_times()        
         print("Diffs in snapshots -> new tee times? ", has_new_tee_times)
 
-        self._clear_snapshots_dir()
+        # self._clear_snapshot_dir()
         self._write_snapshot_df()
         return has_new_tee_times
 
     def _load_snapshot_df(self) -> pd.DataFrame:
         if os.path.exists(SNAPSHOT_PICKLE):
             print("Loading {file_name} into DataFrame".format(file_name=SNAPSHOT_PICKLE))
-            df = pd.read_pickle(SNAPSHOT_PICKLE)
-            df.reset_index(drop=True, inplace=True) 
-            return df
+            return pd.read_pickle(SNAPSHOT_PICKLE)
         print(SNAPSHOT_PICKLE, "does not exist.")
-        return None
+        return pd.DataFrame()
 
     def _has_new_tee_times(self) -> bool:
         print("\nprev_snapshot_df:\n", self.prev_snapshot_df)
@@ -68,9 +65,9 @@ class SnapshotHandler():
         return 'right_only' in set(merged_df['Exists'])
 
     def _write_snapshot_df(self) -> None:
-        if not os.path.exists(SNAPSHOTS_DIR):
-            print("Initializing", SNAPSHOTS_DIR)
-            os.makedirs(SNAPSHOTS_DIR)
+        if not os.path.exists(SNAPSHOT_DIR):
+            print("Initializing", SNAPSHOT_DIR)
+            os.makedirs(SNAPSHOT_DIR)
 
         with open(SNAPSHOT_PICKLE, 'wb+') as f:
             pickle.dump(self.curr_snapshot_df, f)
@@ -78,6 +75,6 @@ class SnapshotHandler():
         self.curr_snapshot_df.to_csv(SNAPSHOT_CSV)
         print("Dumped data into {path}...".format(path=SNAPSHOT_CSV))
 
-    def _clear_snapshots_dir(self) -> None:
-        print("Deleting", SNAPSHOTS_DIR)
-        rmtree(SNAPSHOTS_DIR)
+    def _clear_snapshot_dir(self) -> None:
+        print("Deleting", SNAPSHOT_DIR)
+        rmtree(SNAPSHOT_DIR)

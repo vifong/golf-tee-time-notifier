@@ -152,7 +152,7 @@ class GolfNowScraper():
         html_text = self.browser.page_source
         results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
         if not results:
-            return []
+            return pd.DataFrame()
 
         df_data = []
         for result in results:
@@ -167,7 +167,7 @@ class GolfNowScraper():
 
         df = pd.DataFrame(df_data, columns=['Course', 'Date', 'Tee Time'])
         if self.debug_mode:
-            print(df)    
+            print(df)       
         return df
 
     def _pause(self, secs=1) -> None:
@@ -197,6 +197,7 @@ class ScrapeThread(threading.Thread):
             tee_times_df = scraper.scrape(
                 target_course=self.target_course, target_date=date, 
                 player_count=self.player_count, latest_hour=self.latest_hour)
+            print(tee_times_df)
             if not tee_times_df.empty:
                 self.results_queue.put(tee_times_df)
 
