@@ -92,7 +92,9 @@ if __name__ == '__main__':
     # Compare snapshots to determine whether to send a notification.
     snapshot_handler = SnapshotHandler(data_df=aggregated_df)    
     snapshot_handler.has_new_tee_times()
+    snapshot_handler.write_snapshot_df()
 
+    # Write the notification message or delete it.
     message_writer = NotificationMessageWriter(data_df=aggregated_df)
     if snapshot_handler.has_new_tee_times():
         message_writer.write()
