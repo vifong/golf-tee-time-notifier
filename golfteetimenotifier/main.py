@@ -37,14 +37,18 @@ def init_args():
 
 
 def compute_target_dates() -> List[dt.date]:
+    now = dt.datetime.now()
+    last_date = now.date() + dt.timedelta(DATE_WINDOW)
+    candidate_date = now.date()
+
     weekends = []
-    today = dt.date.today()
-    last_date = today + dt.timedelta(DATE_WINDOW)
-    candidate_date = today
     while candidate_date <= last_date:
         if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
-            weekends.append(candidate_date)
+            # Skip today if it's already too late.
+            if candidate_date != now.date() or now.time().hour < LATEST_HOUR:
+                weekends.append(candidate_date)
         candidate_date = candidate_date + dt.timedelta(1)
+
     print("target_dates:", weekends)
     return weekends
 
