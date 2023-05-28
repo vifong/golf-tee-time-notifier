@@ -50,12 +50,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: message
-          path: golfteetimenotifier/output/message.txt 
+          path: message.txt 
       - name: Set message vars
         id: vars
         if: steps.check_message.outputs.files_exists == 'true'
         run: |
-          MSG_STRING=$(cat golfteetimenotifier/output/message.txt)
+          MSG_STRING=$(cat message.txt)
           echo "MSG_STRING<<EOF" >> $GITHUB_ENV
           echo "$MSG_STRING" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
