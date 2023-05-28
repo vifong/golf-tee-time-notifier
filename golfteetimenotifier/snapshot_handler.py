@@ -13,8 +13,8 @@ import pandas as pd
 import pickle
 
 
-SNAPSHOT_PICKLE = "snapshot.pickle")
-SNAPSHOT_CSV = "snapshot.csv")
+SNAPSHOT_PICKLE = "snapshot.pickle"
+SNAPSHOT_CSV = "snapshot.csv"
 
 
 class SnapshotHandler():
