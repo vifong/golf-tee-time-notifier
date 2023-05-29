@@ -32,7 +32,7 @@ jobs:
         run: pip install -r requirements.txt
       - name: Download snapshot.pickle
         uses: dawidd6/action-download-artifact@v2
-        continue_on_error: true
+        continue-on-error: true
         with:
           name: snapshot
           search_artifacts: true
