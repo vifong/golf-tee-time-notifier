@@ -2,7 +2,7 @@ name: Golf Now Notifier
 
 on:
   # schedule:
-  #   - cron: "0 4 * * *"
+  #   - cron: "*/5 * * * *"
   workflow_dispatch:
 
 env:
@@ -44,12 +44,13 @@ jobs:
       - name: Display file structure
         if: always()
         run: ls -R
-      # - name: Check snapshot.pickle exists
-      #   id: check_snapshot
-      #   uses: andstor/file-existence-action@v1
-      #   with:
-      #     files: "snapshot.pickle"
+      - name: Check snapshot.pickle exists
+        id: check_snapshot
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "snapshot.pickle"
       - name: Upload snapshot.pickle
+        if: steps.check_snapshot.outputs.files_exists == 'true'
         uses: actions/upload-artifact@v3
         with:
           name: snapshot
@@ -73,15 +74,15 @@ jobs:
           echo "MSG_STRING<<EOF" >> $GITHUB_ENV
           echo "$MSG_STRING" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-      # - name: 'Sending SMS Notification'
-      #   if: steps.check_message.outputs.files_exists == 'true'
-      #   uses: twilio-labs/actions-sms@v1
-      #   with:
-      #     fromPhoneNumber: '+1(844)9684068'
-      #     toPhoneNumber: ${{ secrets.PHONE_NUMBER }}
-      #     message: |
-      #       ${{ env.MSG_STRING }}
-      #   env:
-      #     TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
-      #     TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
-      #     TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
+      - name: 'Sending SMS Notification'
+        if: steps.check_message.outputs.files_exists == 'true'
+        uses: twilio-labs/actions-sms@v1
+        with:
+          fromPhoneNumber: '+1(844)9684068'
+          toPhoneNumber: ${{ secrets.PHONE_NUMBER }}
+          message: |
+            ${{ env.MSG_STRING }}
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
+          TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
