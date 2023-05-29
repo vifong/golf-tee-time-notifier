@@ -32,9 +32,9 @@ jobs:
         run: pip install -r requirements.txt
       - name: Download snapshot.pickle
         uses: dawidd6/action-download-artifact@v2
+        continue_on_error: true
         with:
           name: snapshot
-          continue_on_error: true
           search_artifacts: true
       - name: Display file structure
         if: always()
