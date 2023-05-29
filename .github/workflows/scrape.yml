@@ -37,10 +37,10 @@ jobs:
           name: snapshot
           search_artifacts: true
       - name: Display file structure
-        if: always()
+        # if: always()
         run: ls -R
       - name: Run script
-        if: always()
+        # if: always()
         run: python golfteetimenotifier/main.py
       - name: Display file structure
         if: always()
@@ -52,7 +52,7 @@ jobs:
       #     files: "snapshot.pickle"
       - name: Upload snapshot.pickle
         # if: steps.check_snapshot.outputs.files_exists == 'true'
-        if: always()
+        # if: always()
         uses: actions/upload-artifact@v2
         with:
           name: snapshot
