@@ -31,7 +31,7 @@ jobs:
       - name: Install requirements
         run: pip install -r requirements.txt
       - name: Download snapshot.pickle
-        uses: actions/download-artifact@v2
+        uses: dawidd6/action-download-artifact@v2
         with:
           name: snapshot
       - name: Display file structure
