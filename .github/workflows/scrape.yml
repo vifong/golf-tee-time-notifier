@@ -1,8 +1,8 @@
 name: Golf Now Notifier
 
 on:
-  # schedule:
-  #   - cron: "*/5 * * * *"
+  schedule:
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 env:
@@ -79,7 +79,7 @@ jobs:
         uses: twilio-labs/actions-sms@v1
         with:
           fromPhoneNumber: '+1(844)9684068'
-          toPhoneNumber: ${{ secrets.PHONE_NUMBER }}
+          toPhoneNumber: ${{ secrets.VF_PHONE_NUMBER }}
           message: |
             ${{ env.MSG_STRING }}
         env:
