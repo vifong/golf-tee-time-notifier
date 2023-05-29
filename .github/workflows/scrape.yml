@@ -43,14 +43,14 @@ jobs:
       - name: Display file structure
         if: always()
         run: ls -R
-      - name: Check snapshot.pickle exists
-        id: check_snapshot
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "snapshot.pickle"
+      # - name: Check snapshot.pickle exists
+      #   id: check_snapshot
+      #   uses: andstor/file-existence-action@v1
+      #   with:
+      #     files: "snapshot.pickle"
       - name: Upload snapshot.pickle
-        if: steps.check_snapshot.outputs.files_exists == 'true'
-        # if: always()
+        # if: steps.check_snapshot.outputs.files_exists == 'true'
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: snapshot
