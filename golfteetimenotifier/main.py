@@ -19,10 +19,10 @@ import time
 
 DATE_WINDOW = 7
 PLAYER_COUNT = 2
-LATEST_HOUR = 15    # 3pm cutoff
+LATEST_HOUR = 16    # 4pm cutoff
 COURSES = [
-    GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203', ),
-    GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205' ),
+    GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
+    GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
     GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
     GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
     GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
