@@ -74,12 +74,24 @@ jobs:
           echo "MSG_STRING<<EOF" >> $GITHUB_ENV
           echo "$MSG_STRING" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-      - name: 'Sending SMS Notification'
+      - name: 'Sending SMS Notification to VF'
         if: steps.check_message.outputs.files_exists == 'true'
         uses: twilio-labs/actions-sms@v1
         with:
           fromPhoneNumber: '+1(844)9684068'
           toPhoneNumber: ${{ secrets.VF_PHONE_NUMBER }}
+          message: |
+            ${{ env.MSG_STRING }}
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
+          TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
+      - name: 'Sending SMS Notification to BS'
+        if: steps.check_message.outputs.files_exists == 'true'
+        uses: twilio-labs/actions-sms@v1
+        with:
+          fromPhoneNumber: '+1(844)9684068'
+          toPhoneNumber: ${{ secrets.BS_PHONE_NUMBER }}
           message: |
             ${{ env.MSG_STRING }}
         env:
