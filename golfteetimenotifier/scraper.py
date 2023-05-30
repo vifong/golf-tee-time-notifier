@@ -164,7 +164,7 @@ class GolfNowScraper():
             time = dt.datetime.strptime(cleaned_str, "%I:%M%p").time()
             if (self.all_times or 
                 time.hour < latest_hour or 
-                (time.hour == latest_hour and time.minutes = 0)):
+                (time.hour == latest_hour and time.minutes == 0)):
                 df_data.append([target_course.name, target_date, time])
 
         df = pd.DataFrame(df_data, columns=['Course', 'Date', 'Tee Time'])
