@@ -39,9 +39,14 @@ class SnapshotHandler():
         print("Dumped data into {path}...".format(path=SNAPSHOT_CSV))
 
     def has_new_tee_times(self) -> bool:
+        # No current data.
+        if self.curr_snapshot_df.empty:
+            print("No current data.")
+            return False
+
         # No prior data.
         if self.prev_snapshot_df.empty:
-            print("No previous snapshot; writing data to file.")
+            print("No previous snapshot.")
             return True
 
         # No changes.
