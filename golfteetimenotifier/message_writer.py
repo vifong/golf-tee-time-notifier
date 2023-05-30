@@ -32,7 +32,7 @@ class NotificationMessageWriter():
 
     def _craft(self) -> str:
         grouped_df = self.data_df.groupby(['Course', 'Date'])['Tee Time'].apply(list)
-        print(self.grouped_df)
+        print(grouped_df)
 
         message = "***Tee Times Alert!***\n"
         curr_course = ""
