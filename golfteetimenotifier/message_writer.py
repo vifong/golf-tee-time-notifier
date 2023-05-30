@@ -12,8 +12,7 @@ MESSAGE_OUTPUT_FILE = "message.txt"
 
 class NotificationMessageWriter():
     def __init__(self, data_df: pd.DataFrame) -> None:
-        self.grouped_df = data_df.groupby(['Course', 'Date'])['Tee Time'].apply(list)
-        print(self.grouped_df)
+        self.data_df = data_df
 
     def write(self) -> str:
         message = self._craft()
@@ -32,9 +31,12 @@ class NotificationMessageWriter():
             print("Failed to delete", MESSAGE_OUTPUT_FILE) 
 
     def _craft(self) -> str:
+        grouped_df = self.data_df.groupby(['Course', 'Date'])['Tee Time'].apply(list)
+        print(self.grouped_df)
+
         message = "***Tee Times Alert!***\n"
         curr_course = ""
-        for (course_name, date), tee_times in self.grouped_df.items():
+        for (course_name, date), tee_times in grouped_df.items():
             if course_name != curr_course:
                 message += "\n{course}\n".format(course=self._format_course_name(course_name))
                 curr_course = course_name
