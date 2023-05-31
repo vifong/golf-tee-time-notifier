@@ -28,8 +28,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
-      - name: Install requirements
-        run: pip install -r requirements.txt
+      # - name: Install requirements
+      #   run: pip install -r requirements.txt
       - name: Download snapshot.pickle
         uses: dawidd6/action-download-artifact@v2
         continue-on-error: true
