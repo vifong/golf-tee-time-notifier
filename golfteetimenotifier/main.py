@@ -1,14 +1,9 @@
-from collections import defaultdict
 from message_writer import NotificationMessageWriter
 from snapshot_handler import SnapshotHandler
-from typing import Dict
 from typing import List
-from typing import NamedTuple
-from typing import Tuple
 from scraper import GolfCourse
 from scraper import GolfNowScraper
 from scraper import ScrapeThread
-from shutil import rmtree
 from queue import Queue
 import argparse
 import calendar

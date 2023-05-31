@@ -1,14 +1,8 @@
-from collections import defaultdict
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from typing import Dict
 from typing import List
 from typing import NamedTuple
-from typing import Tuple
 from queue import Queue
 import datetime as dt
 import re
@@ -30,8 +24,6 @@ class GolfNowScraper():
         "#sortby=Date&view=Grouping&holes=3&timeperiod=42&timemax=30&timemin=10&"+ 
         "players=2&pricemax=10000&pricemin=0&promotedcampaignsonly=false")
     COLUMNS = ['Course', 'Date', 'Tee Time', 'Players']
-    END_HOUR_9PM = 42
-    END_HOUR_3PM = 30
 
     def __init__(self, earliest_tee_time: dt.time, latest_tee_time: dt.time, min_players: int, 
                        debug_mode=False, all_times=False) -> None:
@@ -62,7 +54,6 @@ class GolfNowScraper():
         url = self.URL_TEMPLATE.format(course_id=target_course.id, course_tag=target_course.tag)            
         self.browser = webdriver.Chrome(options=self.chrome_options)
         self.browser.get(url)
-        # self._pause()
 
     def _filter_player_count(self) -> None:
         golfers_btn = self.browser.find_element(By.XPATH, "//a[@title='Golfers']")

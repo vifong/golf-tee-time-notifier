@@ -1,13 +1,5 @@
-from collections import OrderedDict
 from scraper import GolfCourse
-from shutil import rmtree
-from typing import Dict
-from typing import List
-from typing import NamedTuple
-from typing import Tuple
 import datetime as dt
-import filecmp
-import json
 import os
 import pandas as pd
 import pickle

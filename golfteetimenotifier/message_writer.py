@@ -1,7 +1,4 @@
-from typing import Dict
 from typing import List
-from typing import NamedTuple
-from typing import Tuple
 import datetime as dt
 import os
 import pandas as pd
