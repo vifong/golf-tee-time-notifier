@@ -19,7 +19,7 @@ import time
 
 DATE_WINDOW = 7
 PLAYER_COUNT = 2
-LATEST_HOUR = 18    # 6pm cutoff
+LATEST_HOUR = 17    # 5pm cutoff
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),

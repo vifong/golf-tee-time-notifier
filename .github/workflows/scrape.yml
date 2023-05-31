@@ -36,7 +36,7 @@ jobs:
         with:
           name: snapshot
           workflow: scrape.yml
-          workflow-conclusion: completed
+          workflow_conclusion: completed
           search_artifacts: true
       - name: Display file structure
         run: ls -R
