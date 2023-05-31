@@ -19,13 +19,13 @@ import time
 
 DATE_WINDOW = 7
 PLAYER_COUNT = 2
-LATEST_HOUR = 18    # 6pm cutoff
+LATEST_HOUR = 15    # 3pm cutoff
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
-    # GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
-    # GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
-    # GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
-    # GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
+    GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
+    GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
+    GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
+    GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
 ]
 
 
@@ -87,16 +87,16 @@ if __name__ == '__main__':
     print("\n==AGGREGATED DATA==\n", aggregated_df)
 
     # Compare snapshots to determine whether to send a notification.
-    # snapshot_handler = SnapshotHandler(data_df=aggregated_df)    
-    # snapshot_handler.has_new_tee_times()
-    # snapshot_handler.write_snapshot_df()
+    snapshot_handler = SnapshotHandler(data_df=aggregated_df)    
+    snapshot_handler.has_new_tee_times()
+    snapshot_handler.write_snapshot_df()
 
     # Write the notification message or delete it.
     message_writer = NotificationMessageWriter(data_df=aggregated_df)
-    # if snapshot_handler.has_new_tee_times():
-    message_writer.write()
-    # else:
-    #     message_writer.delete()
+    if snapshot_handler.has_new_tee_times():
+        message_writer.write()
+    else:
+        message_writer.delete()
 
     if args.debug:
         time.sleep(600)

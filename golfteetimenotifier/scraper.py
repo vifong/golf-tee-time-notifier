@@ -166,7 +166,7 @@ class GolfNowScraper():
 
         df = pd.DataFrame(df_data, columns=self.COLUMNS)
         if self.debug_mode:
-            print(df)       
+            print(df)      
         return df
 
     def _clean_time_result(self, time_result: str) -> str:
