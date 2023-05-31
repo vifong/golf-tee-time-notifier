@@ -31,7 +31,8 @@ class NotificationMessageWriter():
             print("Failed to delete", self.MESSAGE_OUTPUT_FILE) 
 
     def _craft(self) -> str:
-        grouped_df = self.data_df.groupby(['Course', 'Date'])[['Tee Time', 'Players']].apply(lambda x: x.values.tolist())
+        grouped_df = self.data_df.groupby(['Course', 'Date'])[['Tee Time', 'Players']].apply(
+            lambda x: x.values.tolist())
         print("\n==GROUPED DATA==\n", grouped_df)
 
         message = "***Tee Times Alert!***\n"
@@ -57,7 +58,8 @@ class NotificationMessageWriter():
     def _format_times_and_players(self, times_and_players: List[List]) -> str:
         formatted_tee_times = []
         for tp in times_and_players:
-            formatted_pair = "{time}({players})".format(time=self._format_time(tp[0]), players=tp[1])
+            formatted_pair = "{time}({players})".format(
+                time=self._format_time(tp[0]), players=tp[1])
             formatted_tee_times.append(formatted_pair)
         return str(formatted_tee_times).replace('\'', '')
 
