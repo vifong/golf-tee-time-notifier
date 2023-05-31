@@ -21,16 +21,13 @@ jobs:
           python-version: '3.7'
           cache: 'pip'
       - name: Cache dependencies
+        id: cache
         uses: actions/cache@v2
         with:
           path: ${{ env.pythonLocation }}
           key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
-        # with:
-        #   path: ~/.cache/pip
-        #   key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-        #   restore-keys: |
-        #     ${{ runner.os }}-pip-
       - name: Install requirements
+        if: steps.cache.outputs.cache-hit != 'true'
         run: pip install -r requirements.txt
       - name: Download snapshot.pickle
         uses: dawidd6/action-download-artifact@v2
