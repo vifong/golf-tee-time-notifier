@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from typing import List
 from typing import NamedTuple
 from queue import Queue
@@ -55,22 +57,12 @@ class GolfNowScraper():
         self.browser = webdriver.Chrome(options=self.chrome_options)
         self.browser.get(url)
 
-    def _filter_player_count(self) -> None:
-        golfers_btn = self.browser.find_element(By.XPATH, "//a[@title='Golfers']")
-        golfers_btn.click()
-
-        two_golfers_radio_input = self.browser.find_element(
-            By.XPATH, 
-            "//input[@type='radio' and @value='{players}']".format(players=self.min_players))
-        parent_element = two_golfers_radio_input.find_element(By.XPATH, "..")
-        parent_element.click()
-        self._pause()
-
     def _filter_date(self, target_date: dt.date) -> None:
+        self._wait_until(by=By.ID, locator="fed-search-big-date")
         date_btn = self.browser.find_element(By.ID, "fed-search-big-date")
         date_btn.click()
-        self._pause()
 
+        self._wait_until(by=By.CLASS_NAME, locator="picker__year")
         picker_nav_prev = self.browser.find_element(By.CLASS_NAME, "picker__nav--prev")
         picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
 
@@ -79,7 +71,8 @@ class GolfNowScraper():
         while picker_year.text != str(target_date.year):
             if self.debug_mode:
                 print("target_year:{0}, picker_year:{1}".format(target_date.year, picker_year.text))
-            self._pause()
+            # self._pause()
+            self._wait_until(by=By.CLASS_NAME, locator="picker__year")
             picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")
             picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
         if self.debug_mode:
@@ -89,21 +82,21 @@ class GolfNowScraper():
         month = '{0:%B}'.format(target_date)
         picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
         picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
-        # Increase month
+        # Increase month until match
         while picker_month_date_object.month < target_date.month:
             if self.debug_mode:
                 print("target_month:{0}, picker_month:{1}".format(month, picker_month.text))
             picker_nav_next.click()
-            self._pause()
+            self._wait_until(by=By.CLASS_NAME, locator="picker__month")
             picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
             picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
             picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
-        # Decrease month
+        # Decrease month until match
         while picker_month_date_object.month > target_date.month:
             if self.debug_mode:
-                    print("target_month:{0}, picker_month:{1}".format(month, picker_month.text))
+                print("target_month:{0}, picker_month:{1}".format(month, picker_month.text))
             picker_nav_prev.click()
-            self._pause()
+            self._wait_until(by=By.CLASS_NAME, locator="picker__month")
             picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
             picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
         if self.debug_mode:
@@ -115,15 +108,24 @@ class GolfNowScraper():
         if self.debug_mode:
             print("target_day:{0}, picker_day:{1}".format(target_date.day, picker_day.text))
         picker_day.click()
-        self._pause()
 
     def _filter_course(self, target_course: GolfCourse) -> None:
+        self._wait_until(by=By.ID, locator="fed-search-big")
         search_bar = self.browser.find_element(By.ID, "fed-search-big")
         search_bar.clear()
         search_bar.send_keys(target_course.name)
         search_btn = self.browser.find_element(By.ID, "btn-search-tee-time")
         search_btn.click()
+
+    def _filter_player_count(self) -> None:
         self._pause()
+        golfers_btn = self.browser.find_element(By.XPATH, "//a[@title='Golfers']")
+        golfers_btn.click()
+        two_golfers_radio_input = self.browser.find_element(
+            By.XPATH, 
+            "//input[@type='radio' and @value='{players}']".format(players=self.min_players))
+        parent_element = two_golfers_radio_input.find_element(By.XPATH, "..")
+        parent_element.click()
 
     # TODO(vifong)
     def _validate_results(self, target_course: GolfCourse, target_date: dt.date) -> bool:
@@ -138,6 +140,7 @@ class GolfNowScraper():
         return target_course == course_result and formatted_date == date_result
 
     def _parse_results(self, target_course: GolfCourse, target_date: dt.date) -> pd.DataFrame: 
+        self._wait_until(by=By.ID, locator="fedresults")
         html_text = self.browser.page_source
         tee_time_results = re.findall('<a href="/tee-times/facility(.+?)</a>', html_text, re.DOTALL)
         df_data = []
@@ -174,6 +177,9 @@ class GolfNowScraper():
 
     def _pause(self, secs=1) -> None:
         time.sleep(secs)
+
+    def _wait_until(self, by: By, locator: str) -> None:
+        WebDriverWait(self.browser, timeout=2).until(EC.presence_of_element_located((by, locator)))
 
 
 class ScrapeThread(threading.Thread):
