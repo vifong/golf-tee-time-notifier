@@ -62,7 +62,6 @@ class GolfNowScraper():
         url = self.URL_TEMPLATE.format(course_id=target_course.id, course_tag=target_course.tag)            
         self.browser = webdriver.Chrome(options=self.chrome_options)
         self.browser.get(url)
-        self.browser.maximize_window()
         # self._pause()
 
     def _filter_player_count(self) -> None:
