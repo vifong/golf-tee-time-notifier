@@ -63,12 +63,11 @@ class GolfNowScraper():
         self.browser = webdriver.Chrome(options=self.chrome_options)
         self.browser.get(url)
         self.browser.maximize_window()
-        self._pause()
+        # self._pause()
 
     def _filter_player_count(self) -> None:
         golfers_btn = self.browser.find_element(By.XPATH, "//a[@title='Golfers']")
         golfers_btn.click()
-        self._pause()
 
         two_golfers_radio_input = self.browser.find_element(
             By.XPATH, 
@@ -90,7 +89,7 @@ class GolfNowScraper():
         while picker_year.text != str(target_date.year):
             if self.debug_mode:
                 print("target_year:{0}, picker_year:{1}".format(target_date.year, picker_year.text))
-            self._pause(2)
+            self._pause()
             picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")
             picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
         if self.debug_mode:
@@ -111,20 +110,20 @@ class GolfNowScraper():
             picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
         # Decrease month
         while picker_month_date_object.month > target_date.month:
-                if self.debug_mode:
-                        print("target_month:{0}, picker_month:{1}".format(month, picker_month.text))
-                picker_nav_prev.click()
-                self._pause()
-                picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
-                picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
+            if self.debug_mode:
+                    print("target_month:{0}, picker_month:{1}".format(month, picker_month.text))
+            picker_nav_prev.click()
+            self._pause()
+            picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
+            picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
         if self.debug_mode:
-                print("target_month:{0}, picker_month:{1}".format(month, picker_month.text))
+            print("target_month:{0}, picker_month:{1}".format(month, picker_month.text))
 
         # Select the day
         picker_day = self.browser.find_element(
             By.XPATH, "//div[@aria-label='{date}']".format(date=target_date.strftime("%a, %b %d")))
         if self.debug_mode:
-                print("target_day:{0}, picker_day:{1}".format(target_date.day, picker_day.text))
+            print("target_day:{0}, picker_day:{1}".format(target_date.day, picker_day.text))
         picker_day.click()
         self._pause()
 

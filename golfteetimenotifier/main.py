@@ -23,10 +23,10 @@ LATEST_TEE_TIME = dt.time(15, 00)   # 3pm
 MIN_PLAYERS = 2
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
-    GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
-    GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
-    GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
-    GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
+    # GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
+    # GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
+    # GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
+    # GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
 ]
 
 
@@ -38,6 +38,9 @@ def init_args():
 
 
 def compute_target_dates() -> List[dt.date]:
+    # TODO(vifong)
+    return [dt.date(2023, 6, 1)]
+
     now = dt.datetime.now()
     last_date = now.date() + dt.timedelta(DATE_WINDOW)
     candidate_date = now.date()
