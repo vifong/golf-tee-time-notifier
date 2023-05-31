@@ -26,13 +26,17 @@ class GolfCourse(NamedTuple):
 class GolfNowScraper():
     URL_TEMPLATE = (
         "https://www.golfnow.com/tee-times/facility/{course_id}-{course_tag}/search" +
-        "#sortby=Date&view=Grouping&holes=3&timeperiod={end_hour}&timemax=30&timemin=10&"+ 
-        "players={player_count}&pricemax=10000&pricemin=0&promotedcampaignsonly=false")
+        "#sortby=Date&view=Grouping&holes=3&timeperiod=42&timemax=30&timemin=10&"+ 
+        "players=2&pricemax=10000&pricemin=0&promotedcampaignsonly=false")
     COLUMNS = ['Course', 'Date', 'Tee Time', 'Players']
     END_HOUR_9PM = 42
     END_HOUR_3PM = 30
 
-    def __init__(self, debug_mode=False, all_times=False) -> None:
+    def __init__(self, earliest_tee_time: dt.time, latest_tee_time: dt.time, min_players: int, 
+                       debug_mode=False, all_times=False) -> None:
+        self.earliest_tee_time = earliest_tee_time
+        self.latest_tee_time = latest_tee_time
+        self.min_players = min_players
         self.debug_mode = debug_mode
         self.all_times = all_times
         self.chrome_options = Options()
@@ -41,35 +45,32 @@ class GolfNowScraper():
             self.chrome_options.add_argument("--disable-dev-shm-usage")
             self.chrome_options.add_argument("--headless")
 
-    def scrape(self, target_course: GolfCourse, target_date: dt.date, 
-                     player_count: int, latest_hour: int) -> pd.DataFrame:
-        self._load_landing_page(target_course=target_course, player_count=player_count)
+    def scrape(self, target_course: GolfCourse, target_date: dt.date) -> pd.DataFrame:
+        self._load_landing_page(target_course=target_course)
         self._filter_date(target_date)
         self._filter_course(target_course)
-        self._filter_player_count(player_count)
+        self._filter_player_count()
         # self._validate_results(target_course=target_course, target_date=target_date)
-        return self._parse_results(
-            target_course=target_course, target_date=target_date, latest_hour=latest_hour)
+        return self._parse_results(target_course=target_course, target_date=target_date)
         
     def close(self):
         self.browser.close()
 
-    def _load_landing_page(self, target_course: GolfCourse, player_count: int) -> None:
-        url = self.URL_TEMPLATE.format(
-            course_id=target_course.id, course_tag=target_course.tag, player_count=player_count,
-            end_hour=self.END_HOUR_3PM if self.all_times else self.END_HOUR_9PM)             
+    def _load_landing_page(self, target_course: GolfCourse) -> None:
+        url = self.URL_TEMPLATE.format(course_id=target_course.id, course_tag=target_course.tag)            
         self.browser = webdriver.Chrome(options=self.chrome_options)
         self.browser.get(url)
         self.browser.maximize_window()
         self._pause()
 
-    def _filter_player_count(self, player_count: int) -> None:
+    def _filter_player_count(self) -> None:
         golfers_btn = self.browser.find_element(By.XPATH, "//a[@title='Golfers']")
         golfers_btn.click()
         self._pause()
 
         two_golfers_radio_input = self.browser.find_element(
-            By.XPATH, "//input[@type='radio' and @value='{players}']".format(players=player_count))
+            By.XPATH, 
+            "//input[@type='radio' and @value='{players}']".format(players=self.min_players))
         parent_element = two_golfers_radio_input.find_element(By.XPATH, "..")
         parent_element.click()
         self._pause()
@@ -145,8 +146,7 @@ class GolfNowScraper():
         print("\ttarget_date:", formatted_date)
         return target_course == course_result and formatted_date == date_result
 
-    def _parse_results(self, target_course: GolfCourse, target_date: dt.date, 
-                             latest_hour: int) -> pd.DataFrame: 
+    def _parse_results(self, target_course: GolfCourse, target_date: dt.date) -> pd.DataFrame: 
         html_text = self.browser.page_source
         time_results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
         players_results = re.findall(
@@ -159,15 +159,10 @@ class GolfNowScraper():
         for time_result, players_result in zip(time_results, players_results):
             time = self._clean_time_result(time_result)
             player_count = self._clean_players_result(players_result)
-            if (self.all_times or 
-                time.hour < latest_hour or 
-                (time.hour == latest_hour and time.minute == 0)):
+            if (time >= self.earliest_tee_time and time <= self.latest_tee_time) or self.all_times:
                 df_data.append([target_course.name, target_date, time, player_count])
 
-        df = pd.DataFrame(df_data, columns=self.COLUMNS)
-        if self.debug_mode:
-            print(df)      
-        return df
+        return pd.DataFrame(df_data, columns=self.COLUMNS)
 
     def _clean_time_result(self, time_result: str) -> str:
         cleaned_str = time_result.strip()
@@ -188,27 +183,29 @@ class GolfNowScraper():
 
 class ScrapeThread(threading.Thread):
     def __init__(self, target_course: GolfCourse, target_dates: List[dt.date], 
-                       player_count: int, latest_hour: int, results_queue: Queue, 
-                       debug_mode=False, all_times=False) -> None:
+                       min_players: int, earliest_tee_time: dt.time, latest_tee_time: dt.time,
+                       results_queue: Queue, debug_mode=False, all_times=False) -> None:
         threading.Thread.__init__(self)
         self.target_course = target_course
         self.target_dates = target_dates
-        self.player_count = player_count
-        self.latest_hour = latest_hour
+        self.min_players = min_players
+        self.earliest_tee_time = earliest_tee_time
+        self.latest_tee_time = latest_tee_time
         self.debug_mode = debug_mode
         self.all_times = all_times
         self.results_queue = results_queue
 
     def run(self) -> None:
         print("Running {course} thread...".format(course=self.target_course.tag))
-        scraper = GolfNowScraper(debug_mode=self.debug_mode, all_times=self.all_times)
-
+        scraper = GolfNowScraper(min_players=self.min_players, 
+                                 earliest_tee_time=self.earliest_tee_time, 
+                                 latest_tee_time=self.latest_tee_time,
+                                 debug_mode=self.debug_mode,
+                                 all_times=self.all_times)
         for date in self.target_dates:
             print("Thread {course} scraping {date}...".format(
                 course=self.target_course.tag, date=date))
-            tee_times_df = scraper.scrape(
-                target_course=self.target_course, target_date=date, 
-                player_count=self.player_count, latest_hour=self.latest_hour)
+            tee_times_df = scraper.scrape(target_course=self.target_course, target_date=date)
             print(tee_times_df)
             if not tee_times_df.empty:
                 self.results_queue.put(tee_times_df)

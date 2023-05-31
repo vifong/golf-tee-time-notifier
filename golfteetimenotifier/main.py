@@ -18,8 +18,9 @@ import time
 
 
 DATE_WINDOW = 7
-PLAYER_COUNT = 2
-LATEST_HOUR = 15    # 3pm cutoff
+MIN_PLAYERS = 2
+EARLIEST_TEE_TIME = dt.time(7, 45)  # 7:45am
+LATEST_TEE_TIME = dt.time(15, 00)   # 3pm
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
@@ -45,7 +46,7 @@ def compute_target_dates() -> List[dt.date]:
     while candidate_date <= last_date:
         if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
             # Skip today if it's already too late.
-            if candidate_date != now.date() or now.time().hour < LATEST_HOUR:
+            if candidate_date != now.date() or now.time() < LATEST_TEE_TIME:
                 weekends.append(candidate_date)
         candidate_date = candidate_date + dt.timedelta(1)
 
@@ -57,9 +58,9 @@ def run_scrape(target_dates: List[dt.date], debug_mode: bool, all_times: bool) -
     results_queue = Queue()
     threads = []
     for course in COURSES:
-        t = ScrapeThread(target_course=course, target_dates=target_dates, player_count=PLAYER_COUNT,
-                         latest_hour=LATEST_HOUR, results_queue=results_queue, 
-                         debug_mode=debug_mode, all_times=all_times)
+        t = ScrapeThread(target_course=course, target_dates=target_dates, min_players=MIN_PLAYERS,
+                         earliest_tee_time=EARLIEST_TEE_TIME, latest_tee_time=LATEST_TEE_TIME,
+                         results_queue=results_queue, debug_mode=debug_mode, all_times=all_times)
         threads.append(t)
         t.start()
     for t in threads:
@@ -97,6 +98,3 @@ if __name__ == '__main__':
         message_writer.write()
     else:
         message_writer.delete()
-
-    if args.debug:
-        time.sleep(600)
