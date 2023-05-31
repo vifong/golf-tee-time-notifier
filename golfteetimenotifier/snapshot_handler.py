@@ -13,11 +13,10 @@ import pandas as pd
 import pickle
 
 
-SNAPSHOT_PICKLE = "snapshot.pickle"
-SNAPSHOT_CSV = "snapshot.csv"
-
-
 class SnapshotHandler():
+    SNAPSHOT_PICKLE = "snapshot.pickle"
+    SNAPSHOT_CSV = "snapshot.csv"
+
     def __init__(self, data_df: pd.DataFrame) -> None:
         self.curr_snapshot_df = data_df
         self.curr_snapshot_df.reset_index(drop=True, inplace=True)  
@@ -28,18 +27,18 @@ class SnapshotHandler():
         print("\n==CURRENT SNAPSHOT==", self.curr_snapshot_df)
 
     def load_snapshot_df(self) -> pd.DataFrame:
-        if os.path.exists(SNAPSHOT_PICKLE):
-            print("Loading {file_name} into DataFrame...".format(file_name=SNAPSHOT_PICKLE))
-            return pd.read_pickle(SNAPSHOT_PICKLE)
-        print(SNAPSHOT_PICKLE, "does not exist.")
+        if os.path.exists(self.SNAPSHOT_PICKLE):
+            print("Loading {file_name} into DataFrame...".format(file_name=self.SNAPSHOT_PICKLE))
+            return pd.read_pickle(self.SNAPSHOT_PICKLE)
+        print(self.SNAPSHOT_PICKLE, "does not exist.")
         return pd.DataFrame()
 
     def write_snapshot_df(self) -> None:
-        with open(SNAPSHOT_PICKLE, 'wb+') as f:
+        with open(self.SNAPSHOT_PICKLE, 'wb+') as f:
             pickle.dump(self.curr_snapshot_df, f)
-            print("Pickled data into {path}...".format(path=SNAPSHOT_PICKLE))
-        self.curr_snapshot_df.to_csv(SNAPSHOT_CSV)
-        print("Dumped data into {path}...".format(path=SNAPSHOT_CSV))
+            print("Pickled data into {path}...".format(path=self.SNAPSHOT_PICKLE))
+        self.curr_snapshot_df.to_csv(self.SNAPSHOT_CSV)
+        print("Dumped data into {path}...".format(path=self.SNAPSHOT_CSV))
 
     def has_new_tee_times(self) -> bool:
         # No current data.

@@ -7,28 +7,28 @@ import os
 import pandas as pd
 
 
-MESSAGE_OUTPUT_FILE = "message.txt"
-
-
 class NotificationMessageWriter():
+    MESSAGE_OUTPUT_FILE = "message.txt"
+    LACITY_GOLF_URL = "https://golf.lacity.org/"
+
     def __init__(self, data_df: pd.DataFrame) -> None:
         self.data_df = data_df
 
     def write(self) -> str:
         message = self._craft()
-        with open(MESSAGE_OUTPUT_FILE, 'w') as f:
+        with open(self.MESSAGE_OUTPUT_FILE, 'w') as f:
             f.write(message)
-            print("Message written to", MESSAGE_OUTPUT_FILE)
+            print("Message written to", self.MESSAGE_OUTPUT_FILE)
             f.close()
 
     def delete(self) -> None:
-        if not os.path.exists(MESSAGE_OUTPUT_FILE):
-            print(MESSAGE_OUTPUT_FILE, "does not exist.")
+        if not os.path.exists(self.MESSAGE_OUTPUT_FILE):
+            print(self.MESSAGE_OUTPUT_FILE, "does not exist.")
         try:
-            os.remove(MESSAGE_OUTPUT_FILE)
-            print("Deleted ", MESSAGE_OUTPUT_FILE)
+            os.remove(self.MESSAGE_OUTPUT_FILE)
+            print("Deleted ", self.MESSAGE_OUTPUT_FILE)
         except:
-            print("Failed to delete", MESSAGE_OUTPUT_FILE) 
+            print("Failed to delete", self.MESSAGE_OUTPUT_FILE) 
 
     def _craft(self) -> str:
         grouped_df = self.data_df.groupby(['Course', 'Date'])['Tee Time'].apply(list)
@@ -43,7 +43,7 @@ class NotificationMessageWriter():
             message += "{date} {times}\n".format(
                 date=self._format_date(date), times=self._format_times(tee_times))
 
-        message += "\nhttps://golf.lacity.org/"
+        message += "\n" + self.LACITY_GOLF_URL
         print("\n==Message==\n", message)
         return message
 
