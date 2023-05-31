@@ -28,6 +28,7 @@ class GolfNowScraper():
         "https://www.golfnow.com/tee-times/facility/{course_id}-{course_tag}/search" +
         "#sortby=Date&view=Grouping&holes=3&timeperiod={end_hour}&timemax=30&timemin=10&"+ 
         "players={player_count}&pricemax=10000&pricemin=0&promotedcampaignsonly=false")
+    COLUMNS = ['Course', 'Date', 'Tee Time', 'Players']
     END_HOUR_9PM = 42
     END_HOUR_3PM = 30
 
@@ -132,9 +133,6 @@ class GolfNowScraper():
         search_btn.click()
         self._pause()
 
-        # WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.ID, "search-header-date")))
-        # print("Search results rendered.")     
-
     # TODO(vifong)
     def _validate_results(self, target_course: GolfCourse, target_date: dt.date) -> bool:
         course_result = self.browser.find_element(By.ID, "fedresults").text
@@ -150,27 +148,39 @@ class GolfNowScraper():
     def _parse_results(self, target_course: GolfCourse, target_date: dt.date, 
                              latest_hour: int) -> pd.DataFrame: 
         html_text = self.browser.page_source
-        results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
-        if not results:
+        time_results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
+        players_results = re.findall(
+            '<span class="golfers-available" title="Golfers">(.+?)</span>', html_text, re.DOTALL)
+        assert len(time_results) == len(players_results)
+        if not (time_results and players_results):
             return pd.DataFrame()
 
         df_data = []
-        for result in results:
-            cleaned_str = result.strip()
-            cleaned_str = re.sub('<script (.+?)</script>', '', cleaned_str)
-            cleaned_str = re.sub('<sub>', '', cleaned_str)
-            cleaned_str = re.sub('</sub>', '', cleaned_str)
-            cleaned_str = re.sub('\'', '', cleaned_str)
-            time = dt.datetime.strptime(cleaned_str, "%I:%M%p").time()
+        for time_result, players_result in zip(time_results, players_results):
+            time = self._clean_time_result(time_result)
+            player_count = self._clean_players_result(players_result)
             if (self.all_times or 
                 time.hour < latest_hour or 
                 (time.hour == latest_hour and time.minute == 0)):
-                df_data.append([target_course.name, target_date, time])
+                df_data.append([target_course.name, target_date, time, player_count])
 
-        df = pd.DataFrame(df_data, columns=['Course', 'Date', 'Tee Time'])
+        df = pd.DataFrame(df_data, columns=self.COLUMNS)
         if self.debug_mode:
             print(df)       
         return df
+
+    def _clean_time_result(self, time_result: str) -> str:
+        cleaned_str = time_result.strip()
+        cleaned_str = re.sub('<script (.+?)</script>', '', cleaned_str)
+        cleaned_str = re.sub('<sub>', '', cleaned_str)
+        cleaned_str = re.sub('</sub>', '', cleaned_str)
+        cleaned_str = re.sub('\'', '', cleaned_str)
+        return dt.datetime.strptime(cleaned_str, "%I:%M%p").time()
+
+    def _clean_players_result(self, players_result: str) -> str:
+        cleaned_str = players_result.strip()
+        cleaned_str = re.sub('<i (.+?)</i>', '', cleaned_str)
+        return cleaned_str[-1]
 
     def _pause(self, secs=1) -> None:
         time.sleep(secs)
