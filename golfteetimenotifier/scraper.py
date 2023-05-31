@@ -13,6 +13,7 @@ from queue import Queue
 import datetime as dt
 import re
 import pandas as pd
+import pprint
 import time
 import threading
 
@@ -39,6 +40,7 @@ class GolfNowScraper():
         self.min_players = min_players
         self.debug_mode = debug_mode
         self.all_times = all_times
+        self.pprinter = pprint.PrettyPrinter(indent=4)
         self.chrome_options = Options()
         if not debug_mode:
             self.chrome_options.add_argument("--no-sandbox")
@@ -148,23 +150,20 @@ class GolfNowScraper():
 
     def _parse_results(self, target_course: GolfCourse, target_date: dt.date) -> pd.DataFrame: 
         html_text = self.browser.page_source
-        time_results = re.findall('<time class=" time-meridian">(.+?)</time>', html_text, re.DOTALL)
-        players_results = re.findall(
-            '<span class="golfers-available" title="Golfers">(.+?)</span>', html_text, re.DOTALL)
-        assert len(time_results) == len(players_results)
-        if not (time_results and players_results):
-            return pd.DataFrame()
+        tee_time_results = re.findall('<a href="/tee-times/facility(.+?)</a>', html_text, re.DOTALL)
 
         df_data = []
-        for time_result, players_result in zip(time_results, players_results):
-            time = self._clean_time_result(time_result)
-            player_count = self._clean_players_result(players_result)
+        for raw_result in tee_time_results:
+            time = self._clean_time_result(raw_result)
+            player_count = self._clean_players_result(raw_result)
             if (time >= self.earliest_tee_time and time <= self.latest_tee_time) or self.all_times:
                 df_data.append([target_course.name, target_date, time, player_count])
 
         return pd.DataFrame(df_data, columns=self.COLUMNS)
 
-    def _clean_time_result(self, time_result: str) -> str:
+    def _clean_time_result(self, raw_result: str) -> str:
+        time_result = re.findall(
+            '<time class=" time-meridian">(.+?)</time>', raw_result, re.DOTALL)[0]       
         cleaned_str = time_result.strip()
         cleaned_str = re.sub('<script (.+?)</script>', '', cleaned_str)
         cleaned_str = re.sub('<sub>', '', cleaned_str)
@@ -172,7 +171,10 @@ class GolfNowScraper():
         cleaned_str = re.sub('\'', '', cleaned_str)
         return dt.datetime.strptime(cleaned_str, "%I:%M%p").time()
 
-    def _clean_players_result(self, players_result: str) -> str:
+    def _clean_players_result(self, raw_result: str) -> str:
+        players_result = re.findall(
+            '<span class="golfers-available" title="Golfers">(.+?)</span>', 
+            raw_result, re.DOTALL)[0]
         cleaned_str = players_result.strip()
         cleaned_str = re.sub('<i (.+?)</i>', '', cleaned_str)
         return cleaned_str[-1]
