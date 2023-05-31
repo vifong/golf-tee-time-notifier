@@ -86,7 +86,7 @@ if __name__ == '__main__':
     results_queue = run_scrape(
         target_dates=target_dates, debug_mode=args.debug, all_times=args.all_times)
     aggregated_df = aggregate_results(results_queue)
-    print("\n==Aggregated data:==\n", aggregated_df)
+    print("\n==AGGREGATED DATA==\n", aggregated_df)
 
     # Compare snapshots to determine whether to send a notification.
     snapshot_handler = SnapshotHandler(data_df=aggregated_df)    
