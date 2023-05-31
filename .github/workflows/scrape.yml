@@ -23,11 +23,12 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v2
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-            ${{ runner.os }}-
+          # path: ~/.cache/pip
+          path: .venv
+          key: ${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          # restore-keys: |
+          #   ${{ runner.os }}-pip-
+          #   ${{ runner.os }}-
       # - name: Install requirements
       #   run: pip install -r requirements.txt
       - name: Download snapshot.pickle
