@@ -14,7 +14,6 @@ class SnapshotHandler():
         self.curr_snapshot_df.reset_index(drop=True, inplace=True)  
         self.prev_snapshot_df = self.load_snapshot_df()
         self.prev_snapshot_df.reset_index(drop=True, inplace=True)
-
         print("\n==PREVIOUS SNAPSHOT==\n", self.prev_snapshot_df)
         print("\n==CURRENT SNAPSHOT==\n", self.curr_snapshot_df)
 
