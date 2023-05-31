@@ -151,20 +151,22 @@ class GolfNowScraper():
     def _parse_results(self, target_course: GolfCourse, target_date: dt.date) -> pd.DataFrame: 
         html_text = self.browser.page_source
         tee_time_results = re.findall('<a href="/tee-times/facility(.+?)</a>', html_text, re.DOTALL)
-
         df_data = []
         for raw_result in tee_time_results:
             time = self._clean_time_result(raw_result)
             player_count = self._clean_players_result(raw_result)
+            if time == "" or player_count == "":
+                continue
             if (time >= self.earliest_tee_time and time <= self.latest_tee_time) or self.all_times:
                 df_data.append([target_course.name, target_date, time, player_count])
-
         return pd.DataFrame(df_data, columns=self.COLUMNS)
 
     def _clean_time_result(self, raw_result: str) -> str:
-        time_result = re.findall(
-            '<time class=" time-meridian">(.+?)</time>', raw_result, re.DOTALL)[0]       
-        cleaned_str = time_result.strip()
+        time_result_list = re.findall(
+            '<time class=" time-meridian">(.+?)</time>', raw_result, re.DOTALL)
+        if len(time_result_list) == 0:
+            return ""
+        cleaned_str = time_result_list[0].strip()
         cleaned_str = re.sub('<script (.+?)</script>', '', cleaned_str)
         cleaned_str = re.sub('<sub>', '', cleaned_str)
         cleaned_str = re.sub('</sub>', '', cleaned_str)
@@ -172,10 +174,12 @@ class GolfNowScraper():
         return dt.datetime.strptime(cleaned_str, "%I:%M%p").time()
 
     def _clean_players_result(self, raw_result: str) -> str:
-        players_result = re.findall(
+        players_result_list = re.findall(
             '<span class="golfers-available" title="Golfers">(.+?)</span>', 
-            raw_result, re.DOTALL)[0]
-        cleaned_str = players_result.strip()
+            raw_result, re.DOTALL)
+        if len(players_result_list) == 0:
+            return ""
+        cleaned_str = players_result_list[0].strip()
         cleaned_str = re.sub('<i (.+?)</i>', '', cleaned_str)
         return cleaned_str[-1]
 
