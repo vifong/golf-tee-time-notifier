@@ -14,7 +14,7 @@ import time
 
 DATE_WINDOW = 7
 EARLIEST_TEE_TIME = dt.time(7, 45)  # 7:45am
-LATEST_TEE_TIME = dt.time(15, 00)   # 3pm
+LATEST_TEE_TIME = dt.time(17, 00)   # 3pm
 MIN_PLAYERS = 2
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
