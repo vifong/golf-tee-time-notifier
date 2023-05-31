@@ -38,9 +38,6 @@ def init_args():
 
 
 def compute_target_dates() -> List[dt.date]:
-    # TODO(vifong)
-    return [dt.date(2023, 6, 1)]
-
     now = dt.datetime.now()
     last_date = now.date() + dt.timedelta(DATE_WINDOW)
     candidate_date = now.date()
