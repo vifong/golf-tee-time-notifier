@@ -24,12 +24,12 @@ class SnapshotHandler():
         self.prev_snapshot_df = self.load_snapshot_df()
         self.prev_snapshot_df.reset_index(drop=True, inplace=True)
 
-        print("Current snapshot:", self.curr_snapshot_df)
-        print("Previous snapshot:", self.prev_snapshot_df)
+        print("\n==Previous snapshot:==", self.prev_snapshot_df)
+        print("\n==Current snapshot==", self.curr_snapshot_df)
 
     def load_snapshot_df(self) -> pd.DataFrame:
         if os.path.exists(SNAPSHOT_PICKLE):
-            print("Loading {file_name} into DataFrame".format(file_name=SNAPSHOT_PICKLE))
+            print("Loading {file_name} into DataFrame...".format(file_name=SNAPSHOT_PICKLE))
             return pd.read_pickle(SNAPSHOT_PICKLE)
         print(SNAPSHOT_PICKLE, "does not exist.")
         return pd.DataFrame()
@@ -63,9 +63,6 @@ class SnapshotHandler():
         return has_new_tee_times
 
     def _has_new_tee_times(self) -> bool:
-        print("\nprev_snapshot_df:\n", self.prev_snapshot_df)
-        print("\ncurr_snapshot_df:\n", self.curr_snapshot_df)
-
         merged_df = pd.merge(self.prev_snapshot_df, self.curr_snapshot_df, 
                              how='right', indicator='Exists')
         print("\nmerged_df:\n", merged_df)

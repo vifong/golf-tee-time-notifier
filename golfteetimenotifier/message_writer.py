@@ -42,7 +42,9 @@ class NotificationMessageWriter():
                 curr_course = course_name
             message += "{date} {times}\n".format(
                 date=self._format_date(date), times=self._format_times(tee_times))
-        print(message)
+
+        message += "\nhttps://golf.lacity.org/"
+        print("\n==Message==\n", message)
         return message
 
     def _format_date(self, date: dt.date) -> str:
