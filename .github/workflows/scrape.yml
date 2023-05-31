@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}-${{ hashFiles('dev-requirements.txt') }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
         # with:
         #   path: ~/.cache/pip
         #   key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
