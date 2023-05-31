@@ -64,8 +64,6 @@ class SnapshotHandler():
     def _has_new_tee_times(self) -> bool:
         merged_df = pd.merge(self.prev_snapshot_df, self.curr_snapshot_df, 
                              how='right', indicator='Exists')
-        print("\nmerged_df:\n", merged_df)
-
         # Return True iff there are new tee times from the current snapshot that was not in the 
         # previous snapshot
         return 'right_only' in set(merged_df['Exists'])
