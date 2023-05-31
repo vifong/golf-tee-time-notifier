@@ -22,7 +22,10 @@ class SnapshotHandler():
         self.curr_snapshot_df = data_df
         self.curr_snapshot_df.reset_index(drop=True, inplace=True)  
         self.prev_snapshot_df = self.load_snapshot_df()
-        self.prev_snapshot_df.reset_index(drop=True, inplace=True) 
+        self.prev_snapshot_df.reset_index(drop=True, inplace=True)
+
+        print("Current snapshot:", self.curr_snapshot_df)
+        print("Previous snapshot:", self.prev_snapshot_df)
 
     def load_snapshot_df(self) -> pd.DataFrame:
         if os.path.exists(SNAPSHOT_PICKLE):
