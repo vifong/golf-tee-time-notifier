@@ -9,7 +9,7 @@ The workflow uses the following tools:
 * __Cloudflare__ worker to dispatch the workflow on cron schedule.
   * _Note: [GitHub Actions scheduling isn't very reliable](https://upptime.js.org/blog/2021/01/22/github-actions-schedule-not-working/). See inspiration for the solution [here](https://github.com/upptime/upptime/issues/42#issuecomment-840264035)._
 
-#### 🚧 Constaints
+#### 🚧 Constraints
 Currently it's built for our specific use case, but in the future I can abstract the parameter to make the workflow more generalizable:
 * Hardcoded 5 golf courses of interest.
 * Only scrapes weekends within the next 7 days.
