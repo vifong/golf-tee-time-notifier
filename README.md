@@ -1,16 +1,15 @@
-## :golf: GolfNow Tee Time Notifier
-_**Intended for my own personal use only.**_
+## ⛳ GolfNow Tee Time Notifier ⏰
 
 This workflow scrapes the [GolfNow website](https://www.golfnow.com/), extracts the open tee times given various parameters (golf courses, # of players, time cutoff, days of the week, etc.), and sends an SMS text message when a new tee time of interest is available.
 
-### :hammer: How does it work
+### 🛠️ How does it work
 The workflow uses the following tools:
 * __Selenium__ web driver to spin up a browser and scrape the webpage.
 * __GitHub Actions__ to upload/download data snapshots and send __[Twilio SMS notifications](https://github.com/marketplace/actions/twilio-sms)__.
 * __Cloudflare__ worker to dispatch the workflow on cron schedule.
   * _Note: [GitHub Actions scheduling isn't very reliable](https://upptime.js.org/blog/2021/01/22/github-actions-schedule-not-working/). See inspiration for the solution [here](https://github.com/upptime/upptime/issues/42#issuecomment-840264035)._
 
-#### :construction: Constaints
+#### 🚧 Constaints
 Currently it's built for our specific use case, but in the future I can abstract the parameter to make the workflow more generalizable:
 * Hardcoded 5 golf courses of interest.
 * Only scrapes weekends within the next 7 days.
@@ -20,7 +19,7 @@ Currently it's built for our specific use case, but in the future I can abstract
 * Workflow runs every 2 minutes, scheduled via Cloudflare worker.
 
 
-#### :file_folder: Files
+#### 📁 Files
 ```
 golfteetimenotifier/
   - main.py              # main script: computes the target dates, runs the scraper (one thread per golf course), and aggregates the results
@@ -37,7 +36,7 @@ snapshot.pickle          # serialized DataFrame of the snapshot
 snapshot.csv             # human-readable version of the snapshot (for debugging)
 ```
 
-#### :calling: Example text message
+#### 📲 Example text message
 ```
 *** Tee Times Alert! ***
 
