@@ -1,4 +1,5 @@
 ## :golf: GolfNow Tee Time Notifier
+_**Intended for my own personal use only.**_
 
 This workflow scrapes the [GolfNow website](https://www.golfnow.com/), extracts the open tee times given various parameters (golf courses, # of players, time cutoff, days of the week, etc.), and sends an SMS text message when a new tee time of interest is available.
 
