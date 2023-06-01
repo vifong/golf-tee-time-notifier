@@ -83,11 +83,11 @@ if __name__ == '__main__':
     print("\n==AGGREGATED DATA==\n", aggregated_df)
 
     snapshot_handler = SnapshotHandler(data_df=aggregated_df)    
-    message_writer = NotificationMessageWriter(data_df=aggregated_df)
+    snapshot_handler.write_snapshot_df()
+    
     # Compare snapshots to determine whether to send a notification.
+    message_writer = NotificationMessageWriter(data_df=aggregated_df)
     if snapshot_handler.has_new_tee_times():
         message_writer.write()
-        # Save new snapshot only when a message is sent.
-        snapshot_handler.write_snapshot_df()
     else:
         message_writer.delete()
