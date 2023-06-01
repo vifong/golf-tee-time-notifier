@@ -50,3 +50,10 @@ RANCHO PARK
 Sat, Jun 03 [7:50AM(3), 11:30AM(2), 3:00PM(4)]
 Sun, Jun 04 [1:40PM(2)]
 ```
+
+#### 🏃‍♀️ How to run locally
+```
+python3 golfteetimenotifier/main.py [--debug] [--all-times]
+```
+* `--debug`: extra print statements and visualize Selenium browser
+* `--all-times`: ignore time filters (for testing purposes)
