@@ -31,7 +31,7 @@ class NotificationMessageWriter():
             lambda x: x.values.tolist())
         print("\n==GROUPED DATA==\n", grouped_df)
 
-        message = "***Tee Times Alert!***\n"
+        message = ""
         curr_course = ""
         for (course_name, date), times_and_players in grouped_df.items():
             if course_name != curr_course:
