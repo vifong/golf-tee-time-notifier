@@ -73,7 +73,7 @@ jobs:
       #     echo "$MSG_STRING" >> $GITHUB_ENV
       #     echo "EOF" >> $GITHUB_ENV
       - name: 'Sending SMS Notification to VF'
-        if: steps.check_message.outputs.files_exists == 'true'
+        # if: steps.check_message.outputs.files_exists == 'true'
         uses: twilio-labs/actions-sms@v1
         with:
           fromPhoneNumber: '+1(844)9684068'
