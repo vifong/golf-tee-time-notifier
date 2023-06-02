@@ -73,7 +73,7 @@ jobs:
       #     echo "$MSG_STRING" >> $GITHUB_ENV
       #     echo "EOF" >> $GITHUB_ENV
       - name: Send Push Notification
-        uses: techulus/push-github-action@v1.0.0
+        uses: techulus/push-github-action@1.0.0
         env:
           API_KEY: ${{ secrets.VF_PUSH_API_KEY }}
           TITLE: "⛳️ Tee Time Alerts"
