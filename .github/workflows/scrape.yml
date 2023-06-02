@@ -78,7 +78,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.VF_CLOUD_NOTIFY_API_TOKEN }}
           USERID: ${{ secrets.VF_CLOUD_NOTIFY_USERID_KEY }}
-          TITLE: `Tee Time Alerts`
+          TITLE: "Tee Time Alerts"
           MESSAGE: "Testing"
 
 
