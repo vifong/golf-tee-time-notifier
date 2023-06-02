@@ -72,15 +72,13 @@ jobs:
       #     echo "MSG_STRING<<EOF" >> $GITHUB_ENV
       #     echo "$MSG_STRING" >> $GITHUB_ENV
       #     echo "EOF" >> $GITHUB_ENV
-      - name: Cloud Notify push notification
-        # if: steps.check_message.outputs.files_exists == 'true'
-        uses: nathan1258/cloudNotify-action@master
+      - name: Send Push Notification
+        uses: techulus/push-github-action@v1.0.0
         env:
-          TOKEN: ${{ secrets.VF_CLOUD_NOTIFY_API_TOKEN }}
-          USERID: ${{ secrets.VF_CLOUD_NOTIFY_USERID_KEY }}
-          TITLE: "Tee Time Alerts"
+          API_KEY: ${{ secrets.VF_PUSH_API_KEY }}
+          TITLE: "⛳️ Tee Time Alerts"
           MESSAGE: "Testing"
-
+          LINK: "https://golf.lacity.org/request_tt/"
 
       # - name: 'Sending SMS Notification to VF'
       #   if: steps.check_message.outputs.files_exists == 'true'
