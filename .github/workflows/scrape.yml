@@ -27,14 +27,14 @@ jobs:
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: pip install -r requirements.txt
-      - name: Download snapshot.pickle
-        uses: dawidd6/action-download-artifact@v2
-        continue-on-error: true
-        with:
-          name: snapshot
-          workflow: scrape.yml
-          workflow_conclusion: completed
-          search_artifacts: true
+      # - name: Download snapshot.pickle
+      #   uses: dawidd6/action-download-artifact@v2
+      #   continue-on-error: true
+      #   with:
+      #     name: snapshot
+      #     workflow: scrape.yml
+      #     workflow_conclusion: completed
+      #     search_artifacts: true
       - name: Display file structure
         run: ls -R
       - name: Run script
@@ -78,21 +78,22 @@ jobs:
         with:
           fromPhoneNumber: '+1(844)9684068'
           toPhoneNumber: ${{ secrets.VF_PHONE_NUMBER }}
-          message: |
-            ${{ env.MSG_STRING }}
+          message: "testing"
+            # |
+            # ${{ env.MSG_STRING }}
         env:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
           TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
-      - name: 'Sending SMS Notification to BS'
-        if: steps.check_message.outputs.files_exists == 'true'
-        uses: twilio-labs/actions-sms@v1
-        with:
-          fromPhoneNumber: '+1(844)9684068'
-          toPhoneNumber: ${{ secrets.BS_PHONE_NUMBER }}
-          message: |
-            ${{ env.MSG_STRING }}
-        env:
-          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
-          TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
-          TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
+      # - name: 'Sending SMS Notification to BS'
+      #   if: steps.check_message.outputs.files_exists == 'true'
+      #   uses: twilio-labs/actions-sms@v1
+      #   with:
+      #     fromPhoneNumber: '+1(844)9684068'
+      #     toPhoneNumber: ${{ secrets.BS_PHONE_NUMBER }}
+      #     message: |
+      #       ${{ env.MSG_STRING }}
+      #   env:
+      #     TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+      #     TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
+      #     TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
