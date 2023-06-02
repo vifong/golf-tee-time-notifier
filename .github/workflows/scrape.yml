@@ -76,7 +76,7 @@ jobs:
       - name: TESTING Set message vars
         id: vars
         run: |
-          MSG_STRING=$(cat << 
+          MSG_STRING=$(cat << EOF
           BALBOA
           Sat, Jun 03 [2:00PM(4), 2:40PM(2)]
 
