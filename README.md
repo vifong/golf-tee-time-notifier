@@ -5,9 +5,11 @@ This workflow scrapes the [GolfNow website](https://www.golfnow.com/), extracts 
 ### 🛠️ How does it work
 The workflow uses the following tools:
 * __Selenium__ web driver to spin up a browser and scrape the webpage.
-* __GitHub Actions__ to upload/download data snapshots and send __[Twilio SMS notifications](https://github.com/marketplace/actions/twilio-sms)__.
+* __GitHub Actions__ to upload/download data snapshots and send __[push notifications](https://github.com/techulus/push-github-action)__.
+  * [__Push by Techulus__](https://push.techulus.com/) to enable mobile push notifications.
 * __Cloudflare__ worker to dispatch the workflow on cron schedule.
   * _Note: [GitHub Actions scheduling isn't very reliable](https://upptime.js.org/blog/2021/01/22/github-actions-schedule-not-working/). See inspiration for the solution [here](https://github.com/upptime/upptime/issues/42#issuecomment-840264035)._
+
 
 #### 🚧 Constraints
 Currently it's built for our specific use case, but in the future I can abstract the parameter to make the workflow more generalizable:
@@ -36,9 +38,9 @@ snapshot.pickle          # serialized DataFrame of the snapshot
 snapshot.csv             # human-readable version of the snapshot (for debugging)
 ```
 
-#### 📲 Example text message
+#### 📲 Example push notification
 ```
-*** Tee Times Alert! ***
+:golf: Tee Times Alert!
 
 BALBOA
 Sat, Jun 03 [2:00PM(4), 2:40PM(2)]
@@ -49,6 +51,8 @@ Sun, Jun 04 [2:25PM(4)]
 RANCHO PARK
 Sat, Jun 03 [7:50AM(3), 11:30AM(2), 3:00PM(4)]
 Sun, Jun 04 [1:40PM(2)]
+
+https://golf.lacity.org/request_tt/
 ```
 
 #### 🏃‍♀️ How to run locally
