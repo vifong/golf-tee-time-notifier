@@ -6,7 +6,6 @@ import pandas as pd
 
 class NotificationMessageWriter():
     MESSAGE_OUTPUT_FILE = "message.txt"
-    LACITY_GOLF_URL = "bit.ly/3MHMD4P"
 
     def __init__(self, data_df: pd.DataFrame) -> None:
         self.data_df = data_df
@@ -42,7 +41,6 @@ class NotificationMessageWriter():
                 date=self._format_date(date), 
                 times=self._format_times_and_players(times_and_players))
 
-        message += "\n" + self.LACITY_GOLF_URL
         print("\n==MESSAGE==\n", message)
         return message
 
