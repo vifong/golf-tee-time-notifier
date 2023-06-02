@@ -72,12 +72,32 @@ jobs:
       #     echo "MSG_STRING<<EOF" >> $GITHUB_ENV
       #     echo "$MSG_STRING" >> $GITHUB_ENV
       #     echo "EOF" >> $GITHUB_ENV
+
+      - name: TESTING Set message vars
+        id: vars
+        run: |
+          MSG_STRING=$(cat << 
+          BALBOA
+          Sat, Jun 03 [2:00PM(4), 2:40PM(2)]
+
+          ENCINO
+          Sun, Jun 04 [2:25PM(4)]
+
+          RANCHO PARK
+          Sat, Jun 03 [7:50AM(3), 11:30AM(2), 3:00PM(4)]
+          Sun, Jun 04 [1:40PM(2)]
+          EOF
+          )
+          echo "MSG_STRING<<EOF" >> $GITHUB_ENV
+          echo "$MSG_STRING" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
       - name: Send Push Notification
         uses: techulus/push-github-action@1.0.0
         env:
           API_KEY: ${{ secrets.VF_PUSH_API_KEY }}
           TITLE: "⛳️ Tee Time Alerts"
-          MESSAGE: "Testing"
+          MESSAGE: |
+            ${{ env.MSG_STRING }}
           LINK: "https://golf.lacity.org/request_tt/"
 
       # - name: 'Sending SMS Notification to VF'
