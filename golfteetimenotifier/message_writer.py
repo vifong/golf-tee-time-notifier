@@ -42,7 +42,7 @@ class NotificationMessageWriter():
                 date=self._format_date(date), 
                 times=self._format_times_and_players(times_and_players))
 
-        message += "\n" + self.LACITY_GOLF_URL
+        # message += "\n" + self.LACITY_GOLF_URL
         print("\n==MESSAGE==\n", message)
         return message
 
