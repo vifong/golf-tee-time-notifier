@@ -13,81 +13,62 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      # - name: Set up Python
-      #   uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
+          cache: 'pip'
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: pip install -r requirements.txt
+      # - name: Download snapshot.pickle
+      #   uses: dawidd6/action-download-artifact@v2
+      #   continue-on-error: true
       #   with:
-      #     python-version: '3.7'
-      #     cache: 'pip'
-      # - name: Cache dependencies
-      #   id: cache
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ${{ env.pythonLocation }}
-      #     key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
-      # - name: Install dependencies
-      #   if: steps.cache.outputs.cache-hit != 'true'
-      #   run: pip install -r requirements.txt
-      # # - name: Download snapshot.pickle
-      # #   uses: dawidd6/action-download-artifact@v2
-      # #   continue-on-error: true
-      # #   with:
-      # #     name: snapshot
-      # #     workflow: scrape.yml
-      # #     workflow_conclusion: completed
-      # #     search_artifacts: true
-      # - name: Display file structure
-      #   run: ls -R
-      # - name: Run script
-      #   run: python golfteetimenotifier/main.py
-      # - name: Display file structure
-      #   if: always()
-      #   run: ls -R
-      # - name: Check snapshot.pickle exists
-      #   id: check_snapshot
-      #   uses: andstor/file-existence-action@v1
-      #   with:
-      #     files: "snapshot.pickle"
+      #     name: snapshot
+      #     workflow: scrape.yml
+      #     workflow_conclusion: completed
+      #     search_artifacts: true
+      - name: Display file structure
+        run: ls -R
+      - name: Run script
+        run: python golfteetimenotifier/main.py
+      - name: Display file structure
+        if: always()
+        run: ls -R
+      - name: Check snapshot.pickle exists
+        id: check_snapshot
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "snapshot.pickle"
       # - name: Upload snapshot.pickle
       #   if: steps.check_snapshot.outputs.files_exists == 'true'
       #   uses: actions/upload-artifact@v3
       #   with:
       #     name: snapshot
       #     path: snapshot.pickle 
-      # - name: Check message.txt exists
-      #   id: check_message
-      #   uses: andstor/file-existence-action@v1
-      #   with:
-      #     files: "message.txt"
-      # - name: Upload message.txt
-      #   if: steps.check_message.outputs.files_exists == 'true'
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: message
-      #     path: message.txt 
-      # - name: Set message vars
-      #   id: vars
-      #   if: steps.check_message.outputs.files_exists == 'true'
-      #   run: |
-      #     MSG_STRING=$(cat message.txt)
-      #     echo "MSG_STRING<<EOF" >> $GITHUB_ENV
-      #     echo "$MSG_STRING" >> $GITHUB_ENV
-      #     echo "EOF" >> $GITHUB_ENV
-
-      - name: TESTING Set message vars
+      - name: Check message.txt exists
+        id: check_message
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "message.txt"
+      - name: Upload message.txt
+        if: steps.check_message.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: message
+          path: message.txt 
+      - name: Set message vars
         id: vars
+        if: steps.check_message.outputs.files_exists == 'true'
         run: |
-          MSG_STRING=$(cat << EOF
-          BALBOA
-          Sat, Jun 03 [2:00PM(4), 2:40PM(2)]
-
-          ENCINO
-          Sun, Jun 04 [2:25PM(4)]
-
-          RANCHO PARK
-          Sat, Jun 03 [7:50AM(3), 11:30AM(2), 3:00PM(4)]
-          Sun, Jun 04 [1:40PM(2)]
-          EOF
-          )
+          MSG_STRING=$(cat message.txt)
           echo "MSG_STRING<<EOF" >> $GITHUB_ENV
           echo "$MSG_STRING" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
