@@ -1,17 +1,18 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from typing import List
-from typing import NamedTuple
-from queue import Queue
 import datetime as dt
-import re
 import pandas as pd
 import pprint
-import time
+import re
 import threading
+import time
+
+from queue import Queue
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from typing import List
+from typing import NamedTuple
 
 
 class GolfCourse(NamedTuple):

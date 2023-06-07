@@ -1,8 +1,9 @@
-from scraper import GolfCourse
 import datetime as dt
 import os
 import pandas as pd
 import pickle
+
+from scraper import GolfCourse
 
 
 class SnapshotHandler():

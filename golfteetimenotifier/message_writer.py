@@ -1,7 +1,8 @@
-from typing import List
 import datetime as dt
 import os
 import pandas as pd
+
+from typing import List
 
 
 class NotificationMessageWriter():
@@ -24,7 +25,7 @@ class NotificationMessageWriter():
             os.remove(self.MESSAGE_OUTPUT_FILE)
             print("Deleted", self.MESSAGE_OUTPUT_FILE)
         except:
-            print("Failed to delete", self.MESSAGE_OUTPUT_FILE) 
+            print("Failed to delete", self.MESSAGE_OUTPUT_FILE)
 
     def _craft(self) -> str:
         grouped_df = self.data_df.groupby(['Course', 'Date'])[['Tee Time', 'Players']].apply(

@@ -1,21 +1,22 @@
-from message_writer import NotificationMessageWriter
-from snapshot_handler import SnapshotHandler
-from typing import List
-from scraper import GolfCourse
-from scraper import GolfNowScraper
-from scraper import ScrapeThread
-from queue import Queue
 import argparse
 import calendar
 import datetime as dt
 import pandas as pd
 import time
 
+from message_writer import NotificationMessageWriter
+from queue import Queue
+from scraper import GolfCourse
+from scraper import GolfNowScraper
+from scraper import ScrapeThread
+from snapshot_handler import SnapshotHandler
+from typing import List
+
 
 DATE_WINDOW = 7
 EARLIEST_TEE_TIME = dt.time(7, 45)  # 7:45am
 LATEST_TEE_TIME = dt.time(15, 00)   # 3pm
-MIN_PLAYERS = 2
+MIN_PLAYERS = 1
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
