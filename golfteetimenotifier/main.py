@@ -76,6 +76,10 @@ if __name__ == '__main__':
     # Setup flags.
     args = init_args()
 
+    print('min_players:', MIN_PLAYERS)
+    print('latest_tee_time:', LATEST_TEE_TIME)
+    print('earliest_tee_time:', EARLIEST_TEE_TIME)
+
     # Prepare and run scrape and collect results.
     target_dates = compute_target_dates()
     results_queue = run_scrape(
