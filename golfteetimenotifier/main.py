@@ -22,7 +22,7 @@ COURSES = [
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
     GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
     GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
-    GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
+    # GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
 ]
 
 
@@ -40,7 +40,7 @@ def compute_target_dates() -> List[dt.date]:
 
     weekends = []
     while candidate_date <= last_date:
-        if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY, calendar.MONDAY]:
+        if candidate_date.weekday() in [calendar.SATURDAY, calendar.SUNDAY]:
             # Skip today if it's already too late.
             if candidate_date != now.date() or now.time() < LATEST_TEE_TIME:
                 weekends.append(candidate_date)
