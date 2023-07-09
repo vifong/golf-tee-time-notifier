@@ -16,12 +16,12 @@ from typing import List
 DATE_WINDOW = 7
 EARLIEST_TEE_TIME = dt.time(7, 45)  # 7:45am
 LATEST_TEE_TIME = dt.time(17, 30)   # 5:30
-MIN_PLAYERS = 1
+MIN_PLAYERS = 2
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
-    GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
-    GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
-    GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
+    # GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
+    # GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
+    # GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
     # GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
 ]
 
