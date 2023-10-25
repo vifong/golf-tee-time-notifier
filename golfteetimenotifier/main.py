@@ -15,15 +15,15 @@ from typing import List
 
 DATE_WINDOW = 7
 EARLIEST_TEE_TIME = dt.time(7, 0)  # 7am
-LATEST_TEE_TIME = dt.time(15, 20)   # 3:20pm
+LATEST_TEE_TIME = dt.time(14, 30)   # 2:30pm
 MIN_PLAYERS = 2
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
     GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
     GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
-    GolfCourse('Penmar Golf Course', 'penmar-golf-course', '12219'),
-    # GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
+    # GolfCourse('Penmar Golf Course', 'penmar-golf-course', '12219'),
+    GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
 ]
 
 
