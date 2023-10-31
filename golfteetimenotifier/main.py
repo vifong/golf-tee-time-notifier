@@ -22,7 +22,7 @@ COURSES = [
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
     GolfCourse('Balboa Golf Course', 'balboa-golf-course', '12197'),
     GolfCourse('Encino Golf Course', 'encino-golf-course', '12200'),
-    # GolfCourse('Penmar Golf Course', 'penmar-golf-course', '12219'),
+    GolfCourse('Penmar Golf Course', 'penmar-golf-course', '12219'),
     GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
     # GolfCourse('Wilson Golf Course', 'wilson-golf-course', '12204'),
     # GolfCourse('Harding Golf Course', 'harding-golf-course', '12202'),
