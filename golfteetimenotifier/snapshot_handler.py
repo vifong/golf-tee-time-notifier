@@ -20,7 +20,7 @@ class SnapshotHandler():
 
     def load_snapshot_df(self) -> pd.DataFrame:
         if os.path.exists(self.SNAPSHOT_PICKLE):
-            print("Loading {file_name} into DataFrame...".format(file_name=self.SNAPSHOT_PICKLE))
+            print(f"Loading {self.SNAPSHOT_PICKLE} into DataFrame...")
             return pd.read_pickle(self.SNAPSHOT_PICKLE)
         print(self.SNAPSHOT_PICKLE, "does not exist.")
         return pd.DataFrame()
@@ -28,9 +28,9 @@ class SnapshotHandler():
     def write_snapshot_df(self) -> None:
         with open(self.SNAPSHOT_PICKLE, 'wb+') as f:
             pickle.dump(self.curr_snapshot_df, f)
-            print("Pickled data into {path}...".format(path=self.SNAPSHOT_PICKLE))
+            print(f"Pickled data into {self.SNAPSHOT_PICKLE}...")
         self.curr_snapshot_df.to_csv(self.SNAPSHOT_CSV)
-        print("Dumped data into {path}...".format(path=self.SNAPSHOT_CSV))
+        print(f"Dumped data into {self.SNAPSHOT_CSV}...")
 
     def has_new_tee_times(self) -> bool:
         # No current data.
