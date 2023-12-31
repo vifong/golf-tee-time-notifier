@@ -69,22 +69,23 @@ class GolfNowScraper():
         picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
 
         # Determine direction of navigation.
-        picker_year = int(self.browser.find_element(By.CLASS_NAME, "picker__year"))
+        picker_year = int(self.browser.find_element(By.CLASS_NAME, "picker__year").text)
         picker_nav_class = "picker__nav--next"      
         if ((picker_year == target_date.year and picker_month_date_object.month > target_date.month)
-            or int(picker_year) > target_date.year):
+            or picker_year > target_date.year):
             picker_nav_class = "picker__nav--prev"
         picker_nav = self.browser.find_element(By.CLASS_NAME, picker_nav_class)
 
         # Increment/decrement month until month and year match.
-        while picker_month_date_object.month != target_date.month or int(picker_year) != target_date.year:
+        while picker_month_date_object.month != target_date.month or picker_year != target_date.year:
             if self.debug_mode:
                 print(f"picker_nav: {picker_nav_class}")
                 print(f"target_month: {month}, picker_month: {picker_month.text}")
-                print(f"target_year: {target_date.year}, picker_year: {picker_year.text}")
+                print(f"target_year: {target_date.year}, picker_year: {picker_year}")
             picker_nav.click()
             self._wait_until_visible(by=By.CLASS_NAME, locator="picker__month")
             picker_nav = self.browser.find_element(By.CLASS_NAME, picker_nav_class)
+            picker_year = int(self.browser.find_element(By.CLASS_NAME, "picker__year").text)
             picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
             picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
 
