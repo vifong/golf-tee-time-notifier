@@ -72,12 +72,12 @@ class GolfNowScraper():
         picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")         
         while picker_year.text != str(target_date.year):
             if self.debug_mode:
-                print("target_year: {0}, picker_year: {1}".format(target_date.year, picker_year.text))
+                print(f"target_year: {target_date.year}, picker_year: {picker_year.text}")
             self._wait_until_visible(by=By.CLASS_NAME, locator="picker__year")
             picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")
             picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
         if self.debug_mode:
-            print("target_year: {0}, picker_year: {1}".format(target_date.year, picker_year.text))
+            print(f"target_year: {target_date.year}, picker_year: {picker_year.text}")
         """
 
         # Check the month
@@ -87,7 +87,7 @@ class GolfNowScraper():
         # Increase month until match
         while picker_month_date_object.month < target_date.month:
             if self.debug_mode:
-                print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
+                print(f"target_month: {month}, picker_month: {picker_month.text}")
             picker_nav_next.click()
             self._wait_until_visible(by=By.CLASS_NAME, locator="picker__month")
             picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
@@ -97,20 +97,20 @@ class GolfNowScraper():
         # Decrease month until match
         while picker_month_date_object.month > target_date.month:
             if self.debug_mode:
-                print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
+                print(f"target_month: {month}, picker_month: {picker_month.text}")
             picker_nav_prev.click()
             self._wait_until_visible(by=By.CLASS_NAME, locator="picker__month")
             picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
             picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
         if self.debug_mode:
-            print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
+            print(f"target_month: {month}, picker_month: {picker_month.text}")
         """
 
         # Select the day
         picker_day = self.browser.find_element(
             By.XPATH, "//div[@aria-label='{date}']".format(date=target_date.strftime("%a, %b %d")))
         if self.debug_mode:
-            print(f"target_day: {target_date.day}, picker_day: {picker_day.text}")
+            print(ff"target_day: {target_date.day}, picker_day: {picker_day.text}")
         picker_day.click()
 
     def _filter_course(self, target_course: GolfCourse) -> None:
@@ -127,7 +127,7 @@ class GolfNowScraper():
         golfers_btn.click()
         num_golfers_radio_input = self.browser.find_element(
             By.XPATH, 
-            "//input[@type='radio' and @value='{players}']".format(players=self.min_players))
+            "//input[@type='radio' and @value='{self.min_players}']".format(players=self.min_players))
         parent_element = num_golfers_radio_input.find_element(By.XPATH, "..")
         parent_element.click()
 
@@ -209,15 +209,14 @@ class ScrapeThread(threading.Thread):
         self.results_queue = results_queue
 
     def run(self) -> None:
-        print("Running {course} thread...".format(course=self.target_course.tag))
+        print(f"Running {self.target_course.tag} thread...")
         scraper = GolfNowScraper(min_players=self.min_players, 
                                  earliest_tee_time=self.earliest_tee_time, 
                                  latest_tee_time=self.latest_tee_time,
                                  debug_mode=self.debug_mode,
                                  all_times=self.all_times)
         for date in self.target_dates:
-            print("Thread {course} scraping {date}...".format(
-                course=self.target_course.tag, date=date))
+            print(f"Thread {self.target_course.tag} scraping {date}...")
             tee_times_df = scraper.scrape(target_course=self.target_course, target_date=date)
             print(tee_times_df)
             if not tee_times_df.empty:
