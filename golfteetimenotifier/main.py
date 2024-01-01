@@ -14,7 +14,7 @@ from typing import List
 
 
 DATE_WINDOW = 7
-EARLIEST_TEE_TIME = dt.time(7, 0)  # 7am
+EARLIEST_TEE_TIME = dt.time(10, 0)  # 10am
 LATEST_TEE_TIME = dt.time(13, 30)   # 1:30pm
 MIN_PLAYERS = 1
 COURSES = [
