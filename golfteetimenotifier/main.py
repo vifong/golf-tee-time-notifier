@@ -16,7 +16,7 @@ from typing import List
 DATE_WINDOW = 7
 EARLIEST_TEE_TIME = dt.time(10, 0)  # 10am
 LATEST_TEE_TIME = dt.time(13, 30)   # 1:30pm
-MIN_PLAYERS = 1
+MIN_PLAYERS = 2
 COURSES = [
     GolfCourse('Rancho Park Golf Course', 'rancho-park-golf-course', '12203'),
     GolfCourse('Woodley Lakes Golf Course', 'woodley-lakes-golf-course', '12205'),
