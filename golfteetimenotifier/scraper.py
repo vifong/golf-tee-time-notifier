@@ -117,8 +117,6 @@ class GolfNowScraper():
             By.XPATH, 
             "//input[@type='radio' and @value='{players}']".format(players=self.min_players))
         parent_element = num_golfers_radio_input.find_element(By.XPATH, "..")
-        self._pause()
-        # print(f"\n\n\nparent_element: {parent_element}\n\n\n")
         parent_element.click()
 
     def _validate_results(self, target_course: GolfCourse, target_date: dt.date) -> bool:
