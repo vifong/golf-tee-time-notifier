@@ -63,51 +63,42 @@ class GolfNowScraper():
         date_btn = self.browser.find_element(By.ID, "fed-search-big-date")
         date_btn.click()
 
-        self._wait_until_clickable(by=By.CLASS_NAME, locator="picker__year")
-        picker_nav_prev = self.browser.find_element(By.CLASS_NAME, "picker__nav--prev")
-        picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
-
-        # Check the year
-        picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")         
-        while picker_year.text != str(target_date.year):
-            if self.debug_mode:
-                print("target_year: {0}, picker_year: {1}".format(target_date.year, picker_year.text))
-            self._wait_until_visible(by=By.CLASS_NAME, locator="picker__year")
-            picker_year = self.browser.find_element(By.CLASS_NAME, "picker__year")
-            picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
-        if self.debug_mode:
-            print("target_year: {0}, picker_year: {1}".format(target_date.year, picker_year.text))
-
-        # Check the month
+        self._wait_until_clickable(by=By.CLASS_NAME, locator="picker__month")
         month = '{0:%B}'.format(target_date)
         picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
         picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
-        # Increase month until match
-        while picker_month_date_object.month < target_date.month:
-            if self.debug_mode:
-                print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
-            picker_nav_next.click()
-            self._wait_until_visible(by=By.CLASS_NAME, locator="picker__month")
-            picker_nav_next = self.browser.find_element(By.CLASS_NAME, "picker__nav--next")
-            picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
-            picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
-        # Decrease month until match
-        while picker_month_date_object.month > target_date.month:
-            if self.debug_mode:
-                print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
-            picker_nav_prev.click()
-            self._wait_until_visible(by=By.CLASS_NAME, locator="picker__month")
-            picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
-            picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
-        if self.debug_mode:
-            print("target_month: {0}, picker_month: {1}".format(month, picker_month.text))
 
-        # Select the day
-        picker_day = self.browser.find_element(
-            By.XPATH, "//div[@aria-label='{date}']".format(date=target_date.strftime("%a, %b %d")))
-        if self.debug_mode:
-            print("target_day: {0}, picker_day: {1}".format(target_date.day, picker_day.text))
-        picker_day.click()
+        # Determine direction of navigation.
+        picker_year = int(self.browser.find_element(By.CLASS_NAME, "picker__year").text)
+        picker_nav_class = "picker__nav--next"      
+        if ((picker_year == target_date.year and picker_month_date_object.month > target_date.month)
+            or picker_year > target_date.year):
+            picker_nav_class = "picker__nav--prev"
+        picker_nav = self.browser.find_element(By.CLASS_NAME, picker_nav_class)
+
+        # Increment/decrement month until month and year match.
+        while picker_month_date_object.month != target_date.month or picker_year != target_date.year:
+            if self.debug_mode:
+                print(f"picker_nav: {picker_nav_class}")
+                print(f"target_month: {month}, picker_month: {picker_month.text}")
+                print(f"target_year: {target_date.year}, picker_year: {picker_year}")
+            picker_nav.click()
+            self._wait_until_visible(by=By.CLASS_NAME, locator="picker__month")
+            picker_nav = self.browser.find_element(By.CLASS_NAME, picker_nav_class)
+            picker_year = int(self.browser.find_element(By.CLASS_NAME, "picker__year").text)
+            picker_month = self.browser.find_element(By.CLASS_NAME, "picker__month")
+            picker_month_date_object = dt.datetime.strptime(picker_month.text, '%B')
+
+        # Select the day.
+        try:
+            formatted_date = target_date.strftime("%a, %b %d")
+            picker_day = self.browser.find_element(
+                By.XPATH, "//div[@aria-label='{date}']".format(date=formatted_date))
+            if self.debug_mode:
+                print(f"target_day: {target_date.day}, picker_day: {picker_day.text}")
+            picker_day.click()
+        except:
+            raise ValueError(f"Error: {formatted_date} is unclickable.") 
 
     def _filter_course(self, target_course: GolfCourse) -> None:
         self._wait_until_clickable(by=By.ID, locator="fed-search-big")
@@ -121,10 +112,11 @@ class GolfNowScraper():
         self._pause()   # not sure why `wait_until` doesn't work.
         golfers_btn = self.browser.find_element(By.XPATH, "//a[@title='Golfers']")
         golfers_btn.click()
-        two_golfers_radio_input = self.browser.find_element(
+        self._pause()
+        num_golfers_radio_input = self.browser.find_element(
             By.XPATH, 
             "//input[@type='radio' and @value='{players}']".format(players=self.min_players))
-        parent_element = two_golfers_radio_input.find_element(By.XPATH, "..")
+        parent_element = num_golfers_radio_input.find_element(By.XPATH, "..")
         parent_element.click()
 
     def _validate_results(self, target_course: GolfCourse, target_date: dt.date) -> bool:
@@ -205,19 +197,21 @@ class ScrapeThread(threading.Thread):
         self.results_queue = results_queue
 
     def run(self) -> None:
-        print("Running {course} thread...".format(course=self.target_course.tag))
+        print(f"Running {self.target_course.tag} thread...")
         scraper = GolfNowScraper(min_players=self.min_players, 
                                  earliest_tee_time=self.earliest_tee_time, 
                                  latest_tee_time=self.latest_tee_time,
                                  debug_mode=self.debug_mode,
                                  all_times=self.all_times)
         for date in self.target_dates:
-            print("Thread {course} scraping {date}...".format(
-                course=self.target_course.tag, date=date))
-            tee_times_df = scraper.scrape(target_course=self.target_course, target_date=date)
-            print(tee_times_df)
-            if not tee_times_df.empty:
-                self.results_queue.put(tee_times_df)
+            print(f"Thread {self.target_course.tag} scraping {date}...")
+            try:
+                tee_times_df = scraper.scrape(target_course=self.target_course, target_date=date)
+                print(tee_times_df)
+                if not tee_times_df.empty:
+                    self.results_queue.put(tee_times_df)
+            except ValueError as e:
+                print(e)
 
         scraper.close()
 
