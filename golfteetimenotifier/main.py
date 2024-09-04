@@ -26,6 +26,8 @@ COURSES = [
     # GolfCourse('Hansen Dam Golf Course', 'hansen-dam-golf-course', '12201'),
     # GolfCourse('Wilson Golf Course', 'wilson-golf-course', '12204'),
     # GolfCourse('Harding Golf Course', 'harding-golf-course', '12202'),
+    GolfCourse('Mesa Linda - Costa Mesa Country Club', 'mesa-linda-costa-mesa-country-club', '12886'),
+    GolfCourse('Los Lagos - Costa Mesa Country Club', 'los-lagos-costa-mesa-country-club', '12885'),
 ]
 
 
